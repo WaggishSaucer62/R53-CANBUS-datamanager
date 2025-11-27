@@ -83,10 +83,11 @@ void setup(void) {
 
 void loop() {
     static unsigned long lastDraw = 0;
-    pressed = tft.getTouch(&xTouch, &yTouch);
-    checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
     canBus.update();
-    if (millis() - lastDraw > 20) { // Only draw screen at 50fps
+    if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
+        pressed = tft.getTouch(&xTouch, &yTouch);
+        checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
+        
         switch(currentScreen) {
         case MAIN_SCREEN:
             mainScreen();

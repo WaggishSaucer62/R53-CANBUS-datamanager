@@ -85,8 +85,8 @@ class arcDial {
             tft.drawArc(xPos, yPos, innerRadius, innerRadius - thickness, lastAngle, 330, TFT_BLACK, DARKER_GREY);
         }
 
-        void update(int newVal1, int newVal2) {
-            dialPercentage = map(val1, lowerBound, upperBound, 0, 100);
+        void update(int newVal1, int newVal2) { // In this project, newVal1 = rpm, newVal2 = speed // UPDATE DOES NOT SEEM TO BE ONLY DRAWING CHANGED PARTS, RPM TEXT FLASHES 0 AND GAUGE FLASHES BLACK/COLOUR
+            dialPercentage = map(newVal1, lowerBound, upperBound, 0, 100);
             redValue = map(dialPercentage, 0, 100, 0, 255);
             greenValue = map(dialPercentage, 0, 100, 255, 0);
             colour = tft.color565(redValue, greenValue, 0);
@@ -112,7 +112,7 @@ class arcDial {
                 tft.setTextDatum(MC_DATUM);
                 tft.setTextColor(TFT_WHITE, DARKER_GREY);
                 tft.setTextSize(4);
-                tft.drawNumber(val2, xPos, yPos);
+                tft.drawNumber(newVal2, xPos, yPos);
             }
 
             // Update lower text
@@ -125,7 +125,7 @@ class arcDial {
                 tft.setTextDatum(MC_DATUM);
                 tft.setTextColor(TFT_WHITE, DARKER_GREY);
                 tft.setTextSize(2);
-                tft.drawNumber(val1, xPos, yPos + 30);
+                tft.drawNumber(newVal1, xPos, yPos + 30);
             }
 
             // Update values for other functions and next loop

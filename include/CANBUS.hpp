@@ -17,19 +17,19 @@ class CANBUS {
         float externalTemp;
 
         void update() {
-            if (CAN.checkReceive() != CAN_MSGAVAIL) return;
+            while (CAN.checkReceive() == CAN_MSGAVAIL) {
+                long unsigned int rxId;
+                unsigned char len;
+                unsigned char rxBuf[8];
+                CAN.readMsgBuf(&rxId, &len, rxBuf);
 
-            long unsigned int rxId;
-            unsigned char len;
-            unsigned char rxBuf[8];
-            CAN.readMsgBuf(&rxId, &len, rxBuf);
-
-            switch (rxId) {
-                case 0x316: handleRPM(rxBuf); break;
-                case 0x01F0: handleSpeed(rxBuf); break;
-                case 0x0329: handleThrottle(rxBuf); break;
-                case 0x0613: handleFuel(rxBuf); break;
-                case 0x0615: handleExternalTemp(rxBuf); break;
+                switch (rxId) {
+                    case 0x316: handleRPM(rxBuf); break;
+                    case 0x01F0: handleSpeed(rxBuf); break;
+                    case 0x0329: handleThrottle(rxBuf); break;
+                    case 0x0613: handleFuel(rxBuf); break;
+                    case 0x0615: handleExternalTemp(rxBuf); break;
+                }
             }
         }
 
