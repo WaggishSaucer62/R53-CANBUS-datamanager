@@ -52,7 +52,7 @@ Throughout both methods, when flashing to the ESP32, you may need to press the b
 ### From Build Files:
  - Install python
  - Run `pip install esptool`
- - Download the from the latest release
+ - Download the bootloader.bin, partitions.bin, and firmware.bin files from the latest release.
  - Find the COM port of the esp32, on Windows, this can be done by right clicking the Windows icon in the bottom left, clicking device manager, and opening "Ports (COM & LPT)" and looking for the device that corresponds to your ESP32 to find the COM address, if you don't know by the name of it, you can unplug it to see which one dissapears from the list.
  - Run `esptool --port YOURESP32COMPORT erase_flash`, for example `esptool --port COM4 erase_flash`
  - Run `esptool --chip esp32 --port YOURESP32COMPORT --baud 460800 write_flash -z 0x1000 bootloader.bin 0x8000 partitions.bin 0x10000 firmware.bin` in the same folder as the downloaded files.
