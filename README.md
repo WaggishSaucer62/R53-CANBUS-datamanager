@@ -2,7 +2,7 @@
 ## Intro:
 An ESP32 based project to log and display information sourced from CANBUS messages from the R53 Mini Cooper S, using PlatformIO.
 
-Note: I only have a few days of C++ outside of basic Arduino projects under my belt, so I'm sure there are many things that can be improved in the code, but at least it's better than whatever that 700 line Arduino file I had before was :P
+Note: I only have a few days of C++ experience outside of basic Arduino projects and I've never used classes before, so I'm sure there are many things that can be improved in the code, but at least it's better than whatever that 700 line Arduino file I had before was :P
 
 
 ## TODO:
