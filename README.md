@@ -4,7 +4,7 @@ An ESP32 based project to log and display information sourced from CANBUS messag
 
 Note: I only have a few days of C++ experience outside of basic Arduino projects and I've never used classes before, so I'm sure there are many things that can be improved in the code, but at least it's better than whatever that 700 line Arduino file I had before was :P
 ***
-**Please see the wiki tab at the top of the repo for more detailed instructions, but a basic overview can be found below**
+**Please see the wiki tab at the top of the repo for more detailed instructions, but a basic overview can be found below.**
 ***
 
 
