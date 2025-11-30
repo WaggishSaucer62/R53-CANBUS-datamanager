@@ -1,5 +1,5 @@
 /*
-File for shiftCueDots class, contains all code relevant to updating and drawing them.
+File for shiftCueDotsLED class, contains all code relevant to updating and drawing them, based on non-led version.
 WaggishSaucer62, 27/11/25
 */
 
@@ -8,24 +8,21 @@ WaggishSaucer62, 27/11/25
 #include "globals.h"
 
 
-class shiftCueDots {
+class shiftCueDotsLED {
     private:
         bool shiftDots[5] = {false,false,false,false,false};
         bool previousDotsState[5] = {false,false,false,false,false};
-        uint16_t colors[5] = {TFT_GREEN, TFT_GREEN, TFT_YELLOW, TFT_YELLOW, TFT_RED};
+        int colors[5][3] = {{0, 255, 0}, {0, 255, 0}, {255, 255, 0}, {255, 255, 0}, {255, 0, 0}}; // G, G, Y, Y, R
+        bool flashState = false;
+        bool flashing = false;
+        int lastToggleMillis = 0;
 
     public:
         int xPos;
         int yPos;
-        int spacing;
-        int radius;
+        int flashingRPM;
         
         void update(int rpm) {
-            static int positions[9]; 
-            for (int i = 0; i < 9; i++) {
-                positions[i] = xPos + ((i-4)*spacing);
-            }
-
             if (rpm >= 6000) { // I'm sorry for making you read this... but it works and I'm lazy...
                 shiftDots[0]=true;
                 shiftDots[1]=true;
@@ -64,15 +61,37 @@ class shiftCueDots {
                 shiftDots[4]=false;
             }
 
-            for (int i = 0; i < 5; i++) {
-                if (shiftDots[i] != previousDotsState[i]) {
-                if (shiftDots[i] == false) {
-                    tft.fillCircle(positions[i], yPos, radius, TFT_BLACK);
-                    tft.fillCircle(positions[8-i], yPos, radius, TFT_BLACK);
-                } else {
-                tft.fillCircle(positions[i], yPos, radius, colors[i]);
-                tft.fillCircle(positions[8-i], yPos, radius, colors[i]);
+            if (rpm >= flashingRPM) {
+                flashing = true;
+            } else {
+                flashing = false;
+            }
+
+            if (flashing == true) {
+                if (millis() - lastToggleMillis >= 500) {
+                    lastToggleMillis = millis();
+                    for (int i = 0; i < NUM_LEDS; i++) {
+                        if (flashState == false) {
+                            leds[i].setRGB(0, 0, 0);
+                            flashState = true;
+                        } else {
+                            leds[i].setRGB(255, 0, 0);
+                            flashState = false;
+                        }
+                    }
                 }
+                
+            } else {
+                for (int i = 0; i < 5; i++) {
+                        if (shiftDots[i] != previousDotsState[i]) {
+                            if (shiftDots[i] == false) {
+                                leds[i].setRGB(0, 0, 0);
+                                leds[NUM_LEDS-1-i].setRGB(0, 0, 0);
+                            } else {
+                                leds[i].setRGB(colors[i][0], colors[i][1], colors[i][2]);
+                                leds[NUM_LEDS-1-i].setRGB(colors[i][0], colors[i][1], colors[i][2]);
+                            }
+                        }
                 }
             }
             memcpy(previousDotsState, shiftDots, sizeof(shiftDots));

@@ -28,7 +28,7 @@ class verticalSlider {
         }
 
         void update(int newPercent) {
-            percentage = newPercent; // Theres probably an error in my code below that causes the slider to invert but this works so.....
+            percentage = newPercent;
             if (lastPercent != percentage) {
                 tft.fillCircle(xPos, yPos+((height*lastPercent)/100), radius, TFT_BLACK);
                 tft.fillRect(xPos - width/2, yPos, width, height, TFT_WHITE);

@@ -10,6 +10,8 @@ WaggishSaucer62, 27/11/25
 MCP_CAN CAN(MCP_CS);
 TFT_eSPI tft = TFT_eSPI();
 
+CRGB leds[NUM_LEDS];
+
 
 screenID currentScreen = MAIN_SCREEN;
 

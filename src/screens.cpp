@@ -84,23 +84,22 @@ void powerScreen() {
         float power = (((fullWeight*acceleration)+dragForce)*(powerInformation[2]/3.6))/745.7;
         smoothedPower = smoothedPower + alpha * (power - smoothedPower);
 
-        if (abs(smoothedPower - lastPower) > 0.1) {
-        int textW = 250;
-        int textH = 60;
-        int x = tft.width() / 2;
-        int y = 100;
+        if (abs(smoothedPower - lastPower) > 0.1) { // CORRECT THIS - THIS IS A BUNCH OF PRINTS FOR DEBUGGING
+            tft.fillRect(0, 0, 320, 145, TFT_BLACK);
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setTextSize(4);
+            tft.setTextDatum(MC_DATUM);
+            tft.drawString("Power" + String(smoothedPower, 1), 10, 10);
+            tft.drawString("Acceleration" + String(acceleration, 1), 10, 40);
+            tft.drawString("Weight" + String(fullWeight, 1), 10, 70);
+            tft.drawString("Drag" + String(dragForce, 1), 10, 100);
+            tft.drawString("Speed" + String(powerInformation[2], 1), 10, 130);
 
-        tft.fillRect(x - textW/2, y - textH/2, textW, textH, TFT_BLACK);
-        tft.setTextColor(TFT_WHITE, TFT_BLACK);
-        tft.setTextSize(6);
-        tft.setTextDatum(MC_DATUM);
-        tft.drawString(String(smoothedPower, 1), x, y);
-
-        lastPower = smoothedPower;
-        powerInformation[0] = powerInformation[2];
-        powerInformation[1] = powerInformation[3];
-        powerInformation[2] = canBus.spdAvg;
-        powerInformation[3] = millis();
+            lastPower = smoothedPower;
+            powerInformation[0] = powerInformation[2];
+            powerInformation[1] = powerInformation[3];
+            powerInformation[2] = canBus.spdAvg;
+            powerInformation[3] = millis();
         }
     }
     lastCalc = millis();

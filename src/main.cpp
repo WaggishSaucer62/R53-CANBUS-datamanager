@@ -31,6 +31,9 @@ void setup(void) {
     touchCalibrate();
     tft.fillScreen(TFT_BLACK);
 
+    FastLED.addLeds<WS2812B, LED_DATA_PIN, RGB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.clear();     
+
 
     // Initialise object parameters, these are global objects defined in globals.h/.cpp
     rpmDial.xPos = tft.width()/2;

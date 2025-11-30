@@ -4,10 +4,13 @@ WaggishSaucer62, 27/11/25
 */
 
 #pragma once
+#include <iostream>
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <mcp_can.h>
 #include <SPI.h>
+#include <string>
+#include <FastLED.h>
 
 
 // Macros – do NOT use extern
@@ -15,6 +18,11 @@ WaggishSaucer62, 27/11/25
 #define TFT_CS 15
 #define TOUCH_CS 21
 #define DARKER_GREY 0x18E3
+
+#define NUM_LEDS 9
+#define LED_DATA_PIN 26
+
+extern CRGB leds[NUM_LEDS];
 
 extern MCP_CAN CAN;
 extern TFT_eSPI tft;

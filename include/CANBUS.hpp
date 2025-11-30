@@ -14,7 +14,7 @@ class CANBUS {
         float spdAvg;
         int throttlePos;
         int fuelPercent;
-        float externalTemp;
+        String externalTemp;
 
         void update() {
             while (CAN.checkReceive() == CAN_MSGAVAIL) {
@@ -44,7 +44,7 @@ class CANBUS {
             float rawFR = b[2] | (b[3] << 8);
             float rawRL = b[4] | (b[5] << 8);
             float rawRR = b[6] | (b[7] << 8);
-            float scalingFactor = 14.9;
+            float scalingFactor = 15.0;
 
             float spd[4] = {
                 (rawFL - 10) / scalingFactor,
