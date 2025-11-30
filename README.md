@@ -27,7 +27,7 @@ Note: I only have a few days of C++ experience outside of basic Arduino projects
  - MCP2515 CAN transciever
  - 240x320 2.8" SPI TFT LCD Touch screen with ILI9341 driver and built in SD card reader
  - 12v to 5v buck converter if required
- - PCB has a port for an ARGB strip, but the codebase does not yet do anything with it.
+ - PCB has a port for an ARGB strip, I will use a WS2812B controlled one, but the codebase does not yet use it.
  - Main PCB
 
 ### Cable to connect to car
