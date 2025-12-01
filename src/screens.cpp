@@ -96,11 +96,11 @@ void powerScreen() {
             tft.drawString("Speed" + String(powerInformation[2], 1), 10, 130);
 
             lastPower = smoothedPower;
-            powerInformation[0] = powerInformation[2];
-            powerInformation[1] = powerInformation[3];
-            powerInformation[2] = canBus.spdAvg;
-            powerInformation[3] = millis();
         }
+        powerInformation[0] = powerInformation[2];
+        powerInformation[1] = powerInformation[3];
+        powerInformation[2] = canBus.spdAvg;
+        powerInformation[3] = millis();
     }
     lastCalc = millis();
 
