@@ -51,8 +51,15 @@ void settingsScreenInit() {
 }
 
 void powerScreenInit() {
-    // Empty for now
-}
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setTextSize(3);
+    tft.setTextDatum(TL_DATUM);
+    tft.drawString("Power:  0", 10, 10);
+    tft.drawString("Acceleration 0", 10, 40);
+    tft.drawString("Weight: 0", 10, 70);
+    tft.drawString("Drag: 0", 10, 100);
+    tft.drawString("Speed: 0", 10, 130);
+    }
 
 
 
@@ -87,13 +94,13 @@ void powerScreen() {
         if (abs(smoothedPower - lastPower) > 0.1) { // CORRECT THIS - THIS IS A BUNCH OF PRINTS FOR DEBUGGING
             tft.fillRect(0, 0, 320, 145, TFT_BLACK);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setTextSize(4);
-            tft.setTextDatum(MC_DATUM);
-            tft.drawString("Power" + String(smoothedPower, 1), 10, 10);
-            tft.drawString("Acceleration" + String(acceleration, 1), 10, 40);
-            tft.drawString("Weight" + String(fullWeight, 1), 10, 70);
-            tft.drawString("Drag" + String(dragForce, 1), 10, 100);
-            tft.drawString("Speed" + String(powerInformation[2], 1), 10, 130);
+            tft.setTextSize(3);
+            tft.setTextDatum(TL_DATUM);
+            tft.drawString("Power: " + String(smoothedPower, 1), 10, 10);
+            tft.drawString("Acceleration: " + String(acceleration, 1), 10, 40);
+            tft.drawString("Weight: " + String(fullWeight, 1), 10, 70);
+            tft.drawString("Drag: " + String(dragForce, 1), 10, 100);
+            tft.drawString("Speed: " + String(powerInformation[2], 1), 10, 130);
 
             lastPower = smoothedPower;
         }
