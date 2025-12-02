@@ -31,6 +31,8 @@ void setup(void) {
     touchCalibrate();
     tft.fillScreen(TFT_BLACK);
 
+    SD.begin(SD_CS);
+
     FastLED.addLeds<WS2812B, LED_DATA_PIN, RGB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.clear();     
 

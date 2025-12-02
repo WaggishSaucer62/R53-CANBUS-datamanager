@@ -11,12 +11,14 @@ WaggishSaucer62, 27/11/25
 #include <SPI.h>
 #include <string>
 #include <FastLED.h>
+#include <SD.h>
 
 
 // Macros – do NOT use extern
 #define MCP_CS 27
 #define TFT_CS 15
 #define TOUCH_CS 21
+#define SD_CS 25
 #define DARKER_GREY 0x18E3
 
 #define NUM_LEDS 9
@@ -58,6 +60,7 @@ extern bool lastPressedState;
 #include "verticalSlider.hpp"
 #include "rollingGraph.hpp"
 #include "CANBUS.hpp"
+#include "sdCard.hpp"
 
 
 extern arcDial rpmDial;
@@ -69,3 +72,4 @@ extern button loggingToggle;
 extern verticalSlider brightnessSlider;
 extern rollingGraph powerGraph;
 extern CANBUS canBus;
+extern SDCardReader sd;
