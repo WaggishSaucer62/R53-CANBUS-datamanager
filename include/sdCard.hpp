@@ -42,11 +42,11 @@ public:
 
     String readFile(const String &path) {
         File file = fs.open(path);
-        if (!file) {
-            return "";
-        }
+        if (!file) return "";
 
-        String contents = "";
+        String contents;
+        contents.reserve(file.size());
+
         while (file.available()) {
             contents += (char)file.read();
         }
