@@ -39,6 +39,8 @@ The connector to look for is "IL-AG5-7S-S3C1", this is the listing I bought it f
 ## Known Issues:
  - For some reason, if the car 12v power is connected to the module, **remote locking for the car works intermittently**, but does not affect key based locking. The issue occurs with either power and data, or just power wires plugged in, I have not tested data only.
  - Speed flickers between 0 and correct value sometimes.
+ - Acceleration values randomly blow up over several thousand in power calculations.
+ - RPM arc is sometimes backfilled with a solid colour for no intended reason.
 
 
 ## Installation:
