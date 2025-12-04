@@ -6,6 +6,8 @@ Note: I only have a few days of C++ experience outside of basic Arduino projects
 ***
 **Please see the wiki tab at the top of the repo for more detailed instructions, but a basic overview can be found below.**
 ***
+Credits: Ball joint mount based on [this](https://www.printables.com/model/164844-open-source-universal-ball-joint-to-reuse) by DieZopfe.
+***
 
 
 ## TODO:
