@@ -1,7 +1,7 @@
-/* NOTE: DISPLAY AND TOUCH ORIGIN IS TOP LEFT CORNER
-This is the main file, mainly contains just basic logic, most actual code is within methods and functions.
-WaggishSaucer62, 27/11/25
-*/
+// /* NOTE: DISPLAY AND TOUCH ORIGIN IS TOP LEFT CORNER
+// This is the main file, mainly contains just basic logic, most actual code is within methods and functions.
+// WaggishSaucer62, 27/11/25
+// */
 
 #include "functions.h"
 #include "globals.h"
@@ -15,13 +15,12 @@ void setup(void) {
     pinMode(TOUCH_CS, OUTPUT);
     digitalWrite(TOUCH_CS, HIGH);
 
-    SPI.begin(18, 19, 23, MCP_CS);
+    SPI.begin(18, 19, 23, MCP_CS); // SCLK, MISO, MOSI, CS
     if (CAN.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
         Serial.println("MCP2515 Init OK!");
         CAN.setMode(MCP_NORMAL);
     } else {
         Serial.println("MCP2515 Init FAIL!");
-        while (1) delay(1000);
     }
 
     // Now initialize TFT
