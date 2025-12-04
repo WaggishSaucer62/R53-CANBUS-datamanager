@@ -10,6 +10,7 @@ WaggishSaucer62, 27/11/25
 
 class shiftCueDots {
     private:
+        const int thresholds[5] = {2000, 3000, 4000, 5000, 6000};
         bool shiftDots[5] = {false,false,false,false,false};
         bool previousDotsState[5] = {false,false,false,false,false};
         uint16_t colors[5] = {TFT_GREEN, TFT_GREEN, TFT_YELLOW, TFT_YELLOW, TFT_RED};
@@ -26,42 +27,8 @@ class shiftCueDots {
                 positions[i] = xPos + ((i-4)*spacing);
             }
 
-            if (rpm >= 6000) { // I'm sorry for making you read this... but it works and I'm lazy...
-                shiftDots[0]=true;
-                shiftDots[1]=true;
-                shiftDots[2]=true;
-                shiftDots[3]=true;
-                shiftDots[4]=true;
-            } else if (rpm >= 5000) {
-                shiftDots[0]=true;
-                shiftDots[1]=true;
-                shiftDots[2]=true;
-                shiftDots[3]=true;
-                shiftDots[4]=false;
-            } else if (rpm >= 4000) {
-                shiftDots[0]=true;
-                shiftDots[1]=true;
-                shiftDots[2]=true;
-                shiftDots[3]=false;
-                shiftDots[4]=false;
-            } else if (rpm >= 3000) {
-                shiftDots[0]=true;
-                shiftDots[1]=true;
-                shiftDots[2]=false;
-                shiftDots[3]=false;
-                shiftDots[4]=false;
-            } else if (rpm >= 2000) {
-                shiftDots[0]=true;
-                shiftDots[1]=false;
-                shiftDots[2]=false;
-                shiftDots[3]=false;
-                shiftDots[4]=false;
-            } else if (rpm >= 1000) {
-                shiftDots[0]=false;
-                shiftDots[1]=false;
-                shiftDots[2]=false;
-                shiftDots[3]=false;
-                shiftDots[4]=false;
+            for (int i = 0; i < 5; i++) { // Updates each dot state based on relevant thresholds
+                shiftDots[i] = (rpm >= thresholds[i]);
             }
 
             for (int i = 0; i < 5; i++) {
@@ -75,6 +42,8 @@ class shiftCueDots {
                 }
                 }
             }
-            memcpy(previousDotsState, shiftDots, sizeof(shiftDots));
+            for (int i = 0; i < 5; i++) {
+                previousDotsState[i] = shiftDots[i];
+            }
         }
 };

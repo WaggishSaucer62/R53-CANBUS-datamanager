@@ -21,7 +21,7 @@ WaggishSaucer62, 27/11/25
 #define SD_CS 25
 #define DARKER_GREY 0x18E3
 
-#define NUM_LEDS 9
+#define NUM_LEDS 5
 #define LED_DATA_PIN 26
 
 extern CRGB leds[NUM_LEDS];
@@ -61,6 +61,7 @@ extern bool lastPressedState;
 #include "rollingGraph.hpp"
 #include "CANBUS.hpp"
 #include "sdCard.hpp"
+#include "shiftCueDotsLED.hpp"
 
 
 extern arcDial rpmDial;
@@ -73,3 +74,4 @@ extern verticalSlider brightnessSlider;
 extern rollingGraph powerGraph;
 extern CANBUS canBus;
 extern SDCardReader sd;
+extern shiftCueDotsLED shiftDotsLED;

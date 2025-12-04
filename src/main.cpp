@@ -7,6 +7,11 @@ WaggishSaucer62, 27/11/25
 #include "globals.h"
 
 
+int counter = 0;
+int lastFrameTime = 0;
+int frameTime = 0;
+
+
 void setup(void) {
     Serial.begin(115200);
     // Disable TFT/Touch while MCP initializes to prevent clashes
@@ -33,8 +38,8 @@ void setup(void) {
 
     SD.begin(SD_CS);
 
-    FastLED.addLeds<WS2812B, LED_DATA_PIN, RGB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-    FastLED.clear();     
+    FastLED.addLeds<WS2812B, LED_DATA_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.clear();
 
 
     // Initialise object parameters, these are global objects defined in globals.h/.cpp
@@ -42,7 +47,7 @@ void setup(void) {
     rpmDial.yPos = (tft.height()/2) + 20;
     rpmDial.radius = 80;
     rpmDial.lowerBound = 0;
-    rpmDial.upperBound = 8000;
+    rpmDial.upperBound = 7000;
     rpmDial.val1 = 0;
     rpmDial.val2 = 0;
 
@@ -80,6 +85,8 @@ void setup(void) {
     brightnessSlider.width = 6;
     brightnessSlider.radius = 20;
 
+    shiftDotsLED.flashingRPM = 6000;
+
     // Opens main screen by default
     mainScreenInit();
     // calibrateAndPrintTouchData(); // UNCOMMENT, COMMENT OUT LOOP TO CALIBRATE TOUCH, prints calibration data to serial
@@ -87,23 +94,35 @@ void setup(void) {
 
 
 void loop() {
+    // counter += 3;
+    // if (counter >= 7000) {
+    //     counter = 0;
+    // }
+    // shiftDotsLED.update(counter);
+    // shiftDots.update(counter);
+    // rpmDial.update(counter, 0);
+
+    // frameTime = millis() - lastFrameTime;
+    // tempText.update(String(frameTime));
+    // lastFrameTime = millis();
+
     static unsigned long lastDraw = 0;
     canBus.update();
-    if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
-        pressed = tft.getTouch(&xTouch, &yTouch);
-        checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
+    // if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
+    //     pressed = tft.getTouch(&xTouch, &yTouch);
+    //     checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
         
-        switch(currentScreen) {
-        case MAIN_SCREEN:
-            mainScreen();
-            break;
-        case SETTINGS_SCREEN:
-            settingsScreen();
-            break;
-        case POWER_SCREEN:
-            powerScreen();
-            break;
-        }
-        lastDraw = millis();
-    }
+    //     switch(currentScreen) {
+    //     case MAIN_SCREEN:
+    //         mainScreen();
+    //         break;
+    //     case SETTINGS_SCREEN:
+    //         settingsScreen();
+    //         break;
+    //     case POWER_SCREEN:
+    //         powerScreen();
+    //         break;
+    //     }
+    //     lastDraw = millis();
+    // }
 }

@@ -41,3 +41,4 @@ verticalSlider brightnessSlider;
 rollingGraph powerGraph(tft, 10, 150, 300, 80, 0, 200);
 CANBUS canBus;
 SDCardReader sd(SD);
+shiftCueDotsLED shiftDotsLED;
