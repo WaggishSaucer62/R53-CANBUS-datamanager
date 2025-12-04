@@ -19,6 +19,7 @@ Note: I only have a few days of C++ experience outside of basic Arduino projects
  - [ ] Scan for other dataframes and attempt to decode them.
  - [ ] Add wiring diagram for car cable splitter to README.
  - [ ] Add ARGB strip functionality
+ - [ ] Create a config file (led count, rpm band settings etc.)
 
 
 ## Parts List:
