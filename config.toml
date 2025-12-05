@@ -1,7 +1,0 @@
-[general]
-brightness = 255
-screen = MAIN_SCREEN
-
-[logging]
-toggle = false
-logRate = 500

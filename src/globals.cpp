@@ -27,6 +27,7 @@ float mass = 1215;
 float powerInformation[4] = {0,0,0,0};
 
 int brightnessPercentage = 100;
+int LEDbrightnessPercentage = 100;
 
 bool lastPressedState = false;
 
@@ -38,7 +39,9 @@ shiftCueDots shiftDots;
 textLabel tempText;
 button loggingToggle;
 verticalSlider brightnessSlider;
+verticalSlider LEDbrightnessSlider;
 rollingGraph powerGraph(tft, 10, 150, 300, 80, 0, 200);
 CANBUS canBus;
 SDCardReader sd(SD);
 shiftCueDotsLED shiftDotsLED;
+configManager config(sd);

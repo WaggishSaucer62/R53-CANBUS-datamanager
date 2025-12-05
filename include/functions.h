@@ -9,6 +9,8 @@ WaggishSaucer62, 27/11/25
 #include <mcp_can.h>
 #include <SPI.h>
 
+#include "globals.h"
+
 
 void touchCalibrate();
 void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch);
@@ -21,3 +23,5 @@ void powerScreen();
 void fullscreenWarning(String text);
 
 void calibrateAndPrintTouchData();
+
+screenID parseScreenID(const String &name);

@@ -13,13 +13,14 @@ class shiftCueDotsLED {
         const int thresholds[3] = {3000, 4000, 5000};
         bool shiftDots[3] = {false,false,false};
         bool previousDotsState[3] = {false,false,false};
-        int colors[3][3] = {{0, 255, 0}, {255, 255, 0}, {255, 0, 0}}; // G, Y, R
+        int colors[3][3] = {{0, 255, 0}, {255, 255, 0}, {255, 0, 0}};
         bool flashState = false;
         bool flashing = false;
         int lastToggleMillis = 0;
 
     public:
-        int flashingRPM;
+        int flashingRPM = 6000;
+        int flashSpeed = 60;
         
         void update(int rpm) {
             if (rpm >= flashingRPM && flashing == false) {
@@ -43,13 +44,13 @@ class shiftCueDotsLED {
             }
 
             if (flashing == true) {
-                if (millis() - lastToggleMillis >= 60) {
+                if (millis() - lastToggleMillis >= flashSpeed) {
                     lastToggleMillis = millis();
                     for (int i = 0; i < NUM_LEDS; i++) {
                         if (flashState == false) {
                             leds[i].setRGB(0, 0, 0);
                         } else {
-                            leds[i].setRGB(255, 0, 0);
+                            leds[i].setRGB(round((255*LEDbrightnessPercentage)/100), 0, 0);
                         }
                     }
                     flashState = !flashState;
@@ -67,8 +68,8 @@ class shiftCueDotsLED {
                             leds[i].setRGB(0, 0, 0);
                             leds[NUM_LEDS-1-i].setRGB(0, 0, 0);
                         } else {
-                            leds[i].setRGB(colors[i][0], colors[i][1], colors[i][2]);
-                            leds[NUM_LEDS-1-i].setRGB(colors[i][0], colors[i][1], colors[i][2]);
+                            leds[i].setRGB(round((colors[i][0]*LEDbrightnessPercentage)/100), round((colors[i][1]*LEDbrightnessPercentage)/100), round((colors[i][2]*LEDbrightnessPercentage)/100));
+                            leds[NUM_LEDS-1-i].setRGB(round((colors[i][0]*LEDbrightnessPercentage)/100), round((colors[i][1]*LEDbrightnessPercentage)/100), round((colors[i][2]*LEDbrightnessPercentage)/100));
                         }
                         FastLED.show();
                     }

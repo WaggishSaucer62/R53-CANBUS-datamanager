@@ -7,6 +7,13 @@ WaggishSaucer62, 27/11/25
 #include "globals.h"
 
 
+screenID parseScreenID(const String &name) {
+    if (name == "0") return MAIN_SCREEN; // The enum class actually converts them to ints, starting from 0, so in the config it is stored as such.
+    if (name == "1") return SETTINGS_SCREEN;
+    if (name == "2") return POWER_SCREEN;
+}
+
+
 void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
     static unsigned long lastTouchRead = 0;
     static bool touchLastState = false;
@@ -32,6 +39,8 @@ void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
                 currentScreen = MAIN_SCREEN;
                 break;
         }
+        config.set("screen", String(currentScreen));
+        config.save("/config.cfg");
       }
     }
     touchLastState = pressed;
@@ -47,7 +56,8 @@ void mainScreenInit() {
 
 void settingsScreenInit() {
     brightnessSlider.init(brightnessPercentage);
-    loggingToggle.init();
+    LEDbrightnessSlider.init(LEDbrightnessPercentage);
+    loggingToggle.init(config.get("loggingToggle", "0").toInt());
 }
 
 void powerScreenInit() {
@@ -81,11 +91,16 @@ void powerScreen() {
     static float smoothedPower = 0;
     const float alpha = 0.05;    // 0–1, lower is smoother
 
-    if (millis() - lastCalc < 50) { // Every 50ms, calculate power and update related display items
+    if (millis() - lastCalc > 50) { // Every 50ms, calculate power and update related display items
+        powerInformation[0] = powerInformation[2];
+        powerInformation[1] = powerInformation[3];
+        powerInformation[2] = canBus.spdAvg;
+        powerInformation[3] = millis();
+
         float dragForce = 0.5*dragCoeff*frontalArea*airDensity*((powerInformation[2]/3.6)*(powerInformation[2]/3.6));
         float fullWeight = mass + ((50*0.75*canBus.fuelPercent)/100);
         float dt = (powerInformation[3] - powerInformation[1])/1000.0;
-        if ((powerInformation[2] - powerInformation[0] != 0) && dt > 0.0001f) {
+        if ((powerInformation[2] - powerInformation[0] != 0) && dt > 0.01f) {
             acceleration = ((powerInformation[2]-powerInformation[0])/3.6)/dt;
         }
         float power = (((fullWeight*acceleration)+dragForce)*(powerInformation[2]/3.6))/745.7;
@@ -104,12 +119,8 @@ void powerScreen() {
 
             lastPower = smoothedPower;
         }
-        powerInformation[0] = powerInformation[2];
-        powerInformation[1] = powerInformation[3];
-        powerInformation[2] = canBus.spdAvg;
-        powerInformation[3] = millis();
+        lastCalc = millis();
     }
-    lastCalc = millis();
 
     if (millis()-lastUpdatedGraph > 30) { // Still update graph separately, to keep control of scanrate
         powerGraph.update(smoothedPower);
@@ -125,20 +136,38 @@ void settingsScreen() {
 
     if (pressed == true) { // Slider can update as frequently as possible, but the button only triggers once per press.
         if ((xTouch >= (brightnessSlider.xPos-20)) && (xTouch < (brightnessSlider.xPos+20))) {
-        if (yTouch < brightnessSlider.yPos) {
-            brightnessPercentage = 0;
-        } else if (yTouch > (brightnessSlider.yPos+brightnessSlider.height)) {
+        if (yTouch <= brightnessSlider.yPos) {
             brightnessPercentage = 100;
+        } else if (yTouch >= (brightnessSlider.yPos+brightnessSlider.height)) {
+            brightnessPercentage = 0;
         } else {
-        brightnessPercentage = ((yTouch-brightnessSlider.yPos)*100)/brightnessSlider.height;
+            brightnessPercentage = 100 - ((yTouch - brightnessSlider.yPos) * 100) / brightnessSlider.height;
         }
         brightnessSlider.update(brightnessPercentage);
-        analogWrite(22, map(brightnessPercentage, 100, 0, 0, 255));
+        analogWrite(22, map(brightnessPercentage, 0, 100, 0, 255));
+        config.set("screenBrightness", String(brightnessPercentage));
+        config.save("/config.cfg");
+        }
+
+        if ((xTouch >= (LEDbrightnessSlider.xPos-20)) && (xTouch < (LEDbrightnessSlider.xPos+20))) {
+            if (yTouch <= LEDbrightnessSlider.yPos) {
+                LEDbrightnessPercentage = 100;
+            } else if (yTouch >= (LEDbrightnessSlider.yPos+LEDbrightnessSlider.height)) {
+                LEDbrightnessPercentage = 0;
+            } else {
+                LEDbrightnessPercentage = 100 - ((yTouch - LEDbrightnessSlider.yPos) * 100) / LEDbrightnessSlider.height;
+            }
+            LEDbrightnessSlider.update(LEDbrightnessPercentage);
+            config.set("LEDsBrightness", String(LEDbrightnessPercentage));
+            config.save("/config.cfg");
         }
 
         if (lastPressedState == false) {
             loggingToggle.checkIfPressed(xTouch, yTouch);
+            bool state = loggingToggle.getState();
+            config.set("loggingToggle", String(state));
+            config.save("/config.cfg");
         }
         lastPressedState = true;
     }
-};
+}

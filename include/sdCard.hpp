@@ -12,6 +12,7 @@ WaggishSaucer62, 02/12/25
 */
 
 #pragma once
+#include "functions.h"
 #include "globals.h"
 
 

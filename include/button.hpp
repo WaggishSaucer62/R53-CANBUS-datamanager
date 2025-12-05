@@ -20,8 +20,8 @@ class button {
         String text;
         bool state;
 
-        void init() {
-            if (state == true) {
+        void init(bool initialState) {
+            if (initialState == true) {
                 tft.fillCircle(xPos, yPos, radius, colourOn);
             } else {
                 tft.fillCircle(xPos, yPos, radius, colourOff);
@@ -30,11 +30,13 @@ class button {
             tft.setTextSize(1);
             tft.setTextDatum(MC_DATUM);
             tft.drawString(text, xPos, yPos+radius+5);
+
+            state = initialState;
         }
 
         void update(bool newState) {
-            if (newState == state) return; // No change
-            if (state == true) {
+            if (newState == state) return;
+            if (newState == true) {
                 tft.fillCircle(xPos, yPos, radius, colourOn);
             } else {
                 tft.fillCircle(xPos, yPos, radius, colourOff);
@@ -45,7 +47,6 @@ class button {
         void checkIfPressed(uint16_t touchX, uint16_t touchY) {
             int dx = touchX - xPos;
             int dy = touchY - yPos;
-            Serial.print("touchY: "); Serial.print(touchY); Serial.print(" | buttonY: "); Serial.println(yPos);
             if (dx*dx + dy*dy <= radius*radius) {
                 update(!state);
             }

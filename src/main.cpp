@@ -7,36 +7,36 @@ WaggishSaucer62, 27/11/25
 #include "globals.h"
 
 
-int counter = 0;
-int lastFrameTime = 0;
-int frameTime = 0;
-
-
 void setup(void) {
     Serial.begin(115200);
     // Disable TFT/Touch while MCP initializes to prevent clashes
+    pinMode(SD_CS, OUTPUT);
+    digitalWrite(SD_CS, HIGH);
+    pinMode(MCP_CS, OUTPUT);
+    digitalWrite(MCP_CS, HIGH);
     pinMode(TFT_CS, OUTPUT);
     digitalWrite(TFT_CS, HIGH);
     pinMode(TOUCH_CS, OUTPUT);
     digitalWrite(TOUCH_CS, HIGH);
 
-    SPI.begin(18, 19, 23, MCP_CS);
+    SPI.begin(18, 19, 23);
+
+    if (!SD.begin(SD_CS)) {
+        Serial.println("SD FAIL");
+    }
+
     if (CAN.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
         Serial.println("MCP2515 Init OK!");
         CAN.setMode(MCP_NORMAL);
     } else {
         Serial.println("MCP2515 Init FAIL!");
-        while (1) delay(1000);
     }
 
     // Now initialize TFT
     tft.init();
-    analogWrite(22, 255);
     tft.setRotation(3);
     touchCalibrate();
     tft.fillScreen(TFT_BLACK);
-
-    SD.begin(SD_CS);
 
     FastLED.addLeds<WS2812B, LED_DATA_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.clear();
@@ -85,44 +85,73 @@ void setup(void) {
     brightnessSlider.width = 6;
     brightnessSlider.radius = 20;
 
-    shiftDotsLED.flashingRPM = 6000;
+    LEDbrightnessSlider.xPos = 90;
+    LEDbrightnessSlider.yPos = 30;
+    LEDbrightnessSlider.height = 180;
+    LEDbrightnessSlider.width = 6;
+    LEDbrightnessSlider.radius = 20;
 
-    // Opens main screen by default
-    mainScreenInit();
     // calibrateAndPrintTouchData(); // UNCOMMENT, COMMENT OUT LOOP TO CALIBRATE TOUCH, prints calibration data to serial
+
+
+    // Load and apply config file settings, second value is default if key not found
+    config.load("/config.cfg");
+
+    brightnessPercentage = config.get("screenBrightness", "100").toInt();
+    analogWrite(22, map(brightnessPercentage, 0, 100, 0, 255));
+    currentScreen = parseScreenID(config.get("screen", "MAIN_SCREEN"));
+
+    LEDbrightnessPercentage = config.get("LEDsBrightness", "100").toInt();
+    shiftDotsLED.flashSpeed = config.get("LEDsFlashingSpeed", "60").toInt();
+    shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "6000").toInt();
+
+    dragCoeff = config.get("dragCoeff", "0.39").toFloat();
+    airDensity = config.get("airDensity", "1.225").toFloat();
+    frontalArea = config.get("frontalArea", "1.98").toFloat();
+    mass = config.get("mass", "1215.0").toFloat();
+
+    Serial.println(config.get("dragCoeff", "0.39").toFloat());
+    Serial.println(config.get("airDensity", "1.225").toFloat());
+    Serial.println(config.get("frontalArea", "1.98").toFloat());
+    Serial.println(config.get("mass", "1215.0").toFloat());
+
+    // [logging] // ADD LOGGING FUNCTIONALITY AND USE THESE
+    // toggle = false
+    // logRate = 500
+
+    // Initialise the screen as per the loaded config
+    switch(currentScreen) {
+    case MAIN_SCREEN:
+        mainScreenInit();
+        break;
+    case SETTINGS_SCREEN:
+        settingsScreenInit();
+        break;
+    case POWER_SCREEN:
+        powerScreenInit();
+        break;
+    }
 }
 
 
 void loop() {
-    // counter += 3;
-    // if (counter >= 7000) {
-    //     counter = 0;
-    // }
-    // shiftDotsLED.update(counter);
-    // shiftDots.update(counter);
-    // rpmDial.update(counter, 0);
-
-    // frameTime = millis() - lastFrameTime;
-    // tempText.update(String(frameTime));
-    // lastFrameTime = millis();
-
     static unsigned long lastDraw = 0;
     canBus.update();
-    // if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
-    //     pressed = tft.getTouch(&xTouch, &yTouch);
-    //     checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
+    if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
+        pressed = tft.getTouch(&xTouch, &yTouch);
+        checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
         
-    //     switch(currentScreen) {
-    //     case MAIN_SCREEN:
-    //         mainScreen();
-    //         break;
-    //     case SETTINGS_SCREEN:
-    //         settingsScreen();
-    //         break;
-    //     case POWER_SCREEN:
-    //         powerScreen();
-    //         break;
-    //     }
-    //     lastDraw = millis();
-    // }
+        switch(currentScreen) {
+        case MAIN_SCREEN:
+            mainScreen();
+            break;
+        case SETTINGS_SCREEN:
+            settingsScreen();
+            break;
+        case POWER_SCREEN:
+            powerScreen();
+            break;
+        }
+        lastDraw = millis();
+    }
 }

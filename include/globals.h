@@ -12,9 +12,10 @@ WaggishSaucer62, 27/11/25
 #include <string>
 #include <FastLED.h>
 #include <SD.h>
+#include <map>
+#include <string>
 
 
-// Macros – do NOT use extern
 #define MCP_CS 27
 #define TFT_CS 15
 #define TOUCH_CS 21
@@ -48,6 +49,7 @@ extern float mass;
 extern float powerInformation[4];
 
 extern int brightnessPercentage;
+extern int LEDbrightnessPercentage;
 
 extern bool lastPressedState;
 
@@ -62,6 +64,7 @@ extern bool lastPressedState;
 #include "CANBUS.hpp"
 #include "sdCard.hpp"
 #include "shiftCueDotsLED.hpp"
+#include "configManager.hpp"
 
 
 extern arcDial rpmDial;
@@ -71,7 +74,9 @@ extern shiftCueDots shiftDots;
 extern textLabel tempText;
 extern button loggingToggle;
 extern verticalSlider brightnessSlider;
+extern verticalSlider LEDbrightnessSlider;
 extern rollingGraph powerGraph;
 extern CANBUS canBus;
 extern SDCardReader sd;
 extern shiftCueDotsLED shiftDotsLED;
+extern configManager config;
