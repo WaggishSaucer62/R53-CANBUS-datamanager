@@ -12,16 +12,18 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
 
 ## TODO:
  - [x] Refactor to use classes and PlatformIO.
- - [ ] Add SD card support.
+ - [x] Add SD card support.
  - [ ] Make HP estimation actually accurate.
  - [ ] See if it is possible to make it automatically sleep and wake from CAN signals.
- - [x] See if it is possible to provide compiled code to make it easier to flash to ESP32.
- - [ ] Complete and upload PCBs.
- - [ ] Complete and upload 3D printed models for housings and mounts.
+ - [x] Provide compiled code to make it easier to flash to ESP32.
+ - [x] Complete and upload PCBs.
+ - [x] Complete and upload 3D printed models for housings and mounts.
  - [ ] Scan for other dataframes and attempt to decode them.
  - [ ] Add wiring diagram for car cable splitter to README.
- - [ ] Add ARGB strip functionality
- - [ ] Create a config file (led count, rpm band settings etc.)
+ - [x] Add ARGB strip functionality
+ - [x] Create a config file (led count, rpm band settings etc.)
+ - [ ] Make shift dots procedural (points where each dot switches state is not hard coded, but rather calcuated off of an input max/min/no. dots)
+ - [ ] Add logging.
 
 
 ## Parts List:
@@ -59,6 +61,7 @@ Throughout both methods, when flashing to the ESP32, you may need to press the b
  -  If required, you can manually select the COM port of your microcontroller by clicking the plug icon in the bottom bar.
 
 ### From Build Files:
+ - Note: This method DOES NOT support changing the LED strip length off of the precompiled value (5 LEDs for a 60LED/M strip), due to a limitation in the ARGB library used.
  - Install python
  - Run `pip install esptool`
  - Download the bootloader.bin, partitions.bin, and firmware.bin files from the latest release.
