@@ -105,19 +105,25 @@ void setup(void) {
     shiftDotsLED.flashSpeed = config.get("LEDsFlashingSpeed", "60").toInt();
     shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "6000").toInt();
 
-    dragCoeff = config.get("dragCoeff", "0.39").toFloat();
-    airDensity = config.get("airDensity", "1.225").toFloat();
-    frontalArea = config.get("frontalArea", "1.98").toFloat();
-    mass = config.get("mass", "1215.0").toFloat();
+    powerCalc.dragCoeff = config.get("dragCoeff", "0.39").toFloat();
+    powerCalc.airDensity = config.get("airDensity", "1.225").toFloat();
+    powerCalc.frontalArea = config.get("frontalArea", "1.98").toFloat();
+    powerCalc.mass = config.get("mass", "1215.0").toFloat();
 
-    Serial.println(config.get("dragCoeff", "0.39").toFloat());
-    Serial.println(config.get("airDensity", "1.225").toFloat());
-    Serial.println(config.get("frontalArea", "1.98").toFloat());
-    Serial.println(config.get("mass", "1215.0").toFloat());
+    logger.logIntervalMs = config.get("loggingRate", "500").toInt();
+    logger.loggingActive = (config.get("loggingToggle", "0").toInt());
 
-    // [logging] // ADD LOGGING FUNCTIONALITY AND USE THESE
-    // toggle = false
-    // logRate = 500
+    logger.data["rpm"] = &canBus.rpm;
+    logger.data["speed"] = &canBus.spdAvg;
+    logger.data["throttlePos"] = &canBus.throttlePos;
+    logger.data["fuelPercent"] = &canBus.fuelPercent;
+    logger.data["externalTemp"] = &canBus.externalTemp;
+    logger.data["power"] = &powerCalc.smoothedPower;
+    logger.data["acceleration"] = &powerCalc.acceleration;
+    logger.data["fullWeight"] = &powerCalc.fullWeight;
+    if (logger.loggingActive) {
+        logger.init();
+    }
 
     // Initialise the screen as per the loaded config
     switch(currentScreen) {
@@ -137,6 +143,8 @@ void setup(void) {
 void loop() {
     static unsigned long lastDraw = 0;
     canBus.update();
+    logger.log();
+
     if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
         pressed = tft.getTouch(&xTouch, &yTouch);
         checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched

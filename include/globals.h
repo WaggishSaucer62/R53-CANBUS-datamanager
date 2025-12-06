@@ -14,6 +14,7 @@ WaggishSaucer62, 27/11/25
 #include <SD.h>
 #include <map>
 #include <string>
+#include <variant>
 
 
 #define MCP_CS 27
@@ -41,13 +42,6 @@ extern uint16_t xTouch;
 extern uint16_t yTouch;
 extern bool pressed;
 
-
-extern float dragCoeff;
-extern float airDensity;
-extern float frontalArea;
-extern float mass;
-extern float powerInformation[4];
-
 extern int brightnessPercentage;
 extern int LEDbrightnessPercentage;
 
@@ -65,6 +59,8 @@ extern bool lastPressedState;
 #include "sdCard.hpp"
 #include "shiftCueDotsLED.hpp"
 #include "configManager.hpp"
+#include "loggingManager.hpp"
+#include "powerCalculator.hpp"
 
 
 extern arcDial rpmDial;
@@ -80,3 +76,5 @@ extern CANBUS canBus;
 extern SDCardReader sd;
 extern shiftCueDotsLED shiftDotsLED;
 extern configManager config;
+extern loggingManager logger;
+extern powerCalculator powerCalc;

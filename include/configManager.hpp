@@ -1,6 +1,6 @@
 /*
 File for configManager class, handles reading, writing, and editing config (json) files.
-WaggishSaucer62, 27/11/25
+WaggishSaucer62, 05/12/25
 */
 
 #pragma once
