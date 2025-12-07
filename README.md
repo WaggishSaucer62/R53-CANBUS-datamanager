@@ -23,7 +23,7 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
  - [x] Add ARGB strip functionality
  - [x] Create a config file (led count, rpm band settings etc.)
  - [ ] Make shift dots procedural (points where each dot switches state is not hard coded, but rather calcuated off of an input max/min/no. dots)
- - [ ] Add logging.
+ - [x] Add logging.
 
 
 ## Parts List:
