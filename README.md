@@ -3,19 +3,27 @@
 An ESP32 based project to log and display information sourced from CANBUS messages from the R53 Mini Cooper S, using PlatformIO.
 
 Note: I only have a few days of C++ experience outside of basic Arduino projects and I've never used classes before, so I'm sure there are many things that can be improved in the code, but at least it's better than whatever that 700 line Arduino file I had before was :P
+***
+**Please see the wiki tab at the top of the repo for more detailed instructions, but a basic overview can be found below.**
+***
+Credits: Ball joint mount based on [this](https://www.printables.com/model/164844-open-source-universal-ball-joint-to-reuse) by DieZopfe.
+***
 
 
 ## TODO:
  - [x] Refactor to use classes and PlatformIO.
- - [ ] Add SD card support.
+ - [x] Add SD card support.
  - [ ] Make HP estimation actually accurate.
  - [ ] See if it is possible to make it automatically sleep and wake from CAN signals.
- - [x] See if it is possible to provide compiled code to make it easier to flash to ESP32.
- - [ ] Complete and upload PCBs.
- - [ ] Complete and upload 3D printed models for housings and mounts.
+ - [x] Provide compiled code to make it easier to flash to ESP32.
+ - [x] Complete and upload PCBs.
+ - [x] Complete and upload 3D printed models for housings and mounts.
  - [ ] Scan for other dataframes and attempt to decode them.
  - [ ] Add wiring diagram for car cable splitter to README.
- - [ ] Add ARGB strip functionality
+ - [x] Add ARGB strip functionality
+ - [x] Create a config file (led count, rpm band settings etc.)
+ - [ ] Make shift dots procedural (points where each dot switches state is not hard coded, but rather calcuated off of an input max/min/no. dots)
+ - [ ] Add logging.
 
 
 ## Parts List:
@@ -24,7 +32,7 @@ Note: I only have a few days of C++ experience outside of basic Arduino projects
  - MCP2515 CAN transciever
  - 240x320 2.8" SPI TFT LCD Touch screen with ILI9341 driver and built in SD card reader
  - 12v to 5v buck converter if required
- - PCB has a port for an ARGB strip, but the codebase does not yet do anything with it.
+ - PCB has a port for an ARGB strip, I will use a WS2812B controlled one, but the codebase does not yet use it.
  - Main PCB
 
 ### Cable to connect to car
@@ -34,7 +42,10 @@ The connector to look for is "IL-AG5-7S-S3C1", this is the listing I bought it f
 
 
 ## Known Issues:
-For some reason, if the car 12v power is connected to the module, **remote locking for the car works intermittently**, but does not affect key based locking. The issue occurs with either power and data, or just power wires plugged in, I have not tested data only.
+ - For some reason, if the car 12v power is connected to the module, **remote locking for the car works intermittently**, but does not affect key based locking. The issue occurs with either power and data, or just power wires plugged in, I have not tested data only.
+ - Acceleration values randomly blow up over several thousand in power calculations.
+ - RPM arc is sometimes backfilled with a solid colour for no intended reason.
+ - Extra logs are created occasionally.
 
 
 ## Installation:
@@ -50,6 +61,7 @@ Throughout both methods, when flashing to the ESP32, you may need to press the b
  -  If required, you can manually select the COM port of your microcontroller by clicking the plug icon in the bottom bar.
 
 ### From Build Files:
+ - Note: This method DOES NOT support changing the LED strip length off of the precompiled value (5 LEDs for a 60LED/M strip), due to a limitation in the ARGB library used.
  - Install python
  - Run `pip install esptool`
  - Download the bootloader.bin, partitions.bin, and firmware.bin files from the latest release.

@@ -1,7 +1,7 @@
-/* NOTE: DISPLAY AND TOUCH ORIGIN IS TOP LEFT CORNER
-This is the main file, mainly contains just basic logic, most actual code is within methods and functions.
-WaggishSaucer62, 27/11/25
-*/
+// /* NOTE: DISPLAY AND TOUCH ORIGIN IS TOP LEFT CORNER
+// This is the main file, mainly contains just basic logic, most actual code is within methods and functions.
+// WaggishSaucer62, 27/11/25
+// */
 
 #include "functions.h"
 #include "globals.h"
