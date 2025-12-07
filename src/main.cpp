@@ -10,12 +10,21 @@
 void setup(void) {
     Serial.begin(115200);
     // Disable TFT/Touch while MCP initializes to prevent clashes
+    pinMode(SD_CS, OUTPUT);
+    digitalWrite(SD_CS, HIGH);
+    pinMode(MCP_CS, OUTPUT);
+    digitalWrite(MCP_CS, HIGH);
     pinMode(TFT_CS, OUTPUT);
     digitalWrite(TFT_CS, HIGH);
     pinMode(TOUCH_CS, OUTPUT);
     digitalWrite(TOUCH_CS, HIGH);
 
-    SPI.begin(18, 19, 23, MCP_CS); // SCLK, MISO, MOSI, CS
+    SPI.begin(18, 19, 23);
+
+    if (!SD.begin(SD_CS)) {
+        Serial.println("SD FAIL");
+    }
+
     if (CAN.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
         Serial.println("MCP2515 Init OK!");
         CAN.setMode(MCP_NORMAL);
@@ -25,10 +34,12 @@ void setup(void) {
 
     // Now initialize TFT
     tft.init();
-    analogWrite(22, 255);
     tft.setRotation(3);
     touchCalibrate();
     tft.fillScreen(TFT_BLACK);
+
+    FastLED.addLeds<WS2812B, LED_DATA_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.clear();
 
 
     // Initialise object parameters, these are global objects defined in globals.h/.cpp
@@ -36,7 +47,7 @@ void setup(void) {
     rpmDial.yPos = (tft.height()/2) + 20;
     rpmDial.radius = 80;
     rpmDial.lowerBound = 0;
-    rpmDial.upperBound = 8000;
+    rpmDial.upperBound = 7000;
     rpmDial.val1 = 0;
     rpmDial.val2 = 0;
 
@@ -74,19 +85,70 @@ void setup(void) {
     brightnessSlider.width = 6;
     brightnessSlider.radius = 20;
 
-    // Opens main screen by default
-    mainScreenInit();
+    LEDbrightnessSlider.xPos = 90;
+    LEDbrightnessSlider.yPos = 30;
+    LEDbrightnessSlider.height = 180;
+    LEDbrightnessSlider.width = 6;
+    LEDbrightnessSlider.radius = 20;
+
     // calibrateAndPrintTouchData(); // UNCOMMENT, COMMENT OUT LOOP TO CALIBRATE TOUCH, prints calibration data to serial
+
+
+    // Load and apply config file settings, second value is default if key not found
+    config.load("/config.cfg");
+
+    brightnessPercentage = config.get("screenBrightness", "100").toInt();
+    analogWrite(22, map(brightnessPercentage, 0, 100, 0, 255));
+    currentScreen = parseScreenID(config.get("screen", "MAIN_SCREEN"));
+
+    LEDbrightnessPercentage = config.get("LEDsBrightness", "100").toInt();
+    shiftDotsLED.flashSpeed = config.get("LEDsFlashingSpeed", "60").toInt();
+    shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "6000").toInt();
+
+    powerCalc.dragCoeff = config.get("dragCoeff", "0.39").toFloat();
+    powerCalc.airDensity = config.get("airDensity", "1.225").toFloat();
+    powerCalc.frontalArea = config.get("frontalArea", "1.98").toFloat();
+    powerCalc.mass = config.get("mass", "1215.0").toFloat();
+
+    logger.logIntervalMs = config.get("loggingRate", "500").toInt();
+
+    logger.data["rpm"] = &canBus.rpm;
+    logger.data["speed"] = &canBus.spdAvg;
+    logger.data["throttlePos"] = &canBus.throttlePos;
+    logger.data["fuelPercent"] = &canBus.fuelPercent;
+    logger.data["externalTemp"] = &canBus.externalTemp;
+    logger.data["power"] = &powerCalc.smoothedPower;
+    logger.data["acceleration"] = &powerCalc.acceleration;
+    logger.data["fullWeight"] = &powerCalc.fullWeight;
+    if (logger.loggingActive) {
+        logger.init();
+    }
+
+    // Initialise the screen as per the loaded config
+    switch(currentScreen) {
+    case MAIN_SCREEN:
+        mainScreenInit();
+        break;
+    case SETTINGS_SCREEN:
+        settingsScreenInit();
+        break;
+    case POWER_SCREEN:
+        powerScreenInit();
+        break;
+    }
 }
 
 
 void loop() {
     static unsigned long lastDraw = 0;
     canBus.update();
+    logger.log();
+
     if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
         pressed = tft.getTouch(&xTouch, &yTouch);
         checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
         
+        shiftDotsLED.update(canBus.rpm); // Update LEDs every frame irrespective of screen
         switch(currentScreen) {
         case MAIN_SCREEN:
             mainScreen();

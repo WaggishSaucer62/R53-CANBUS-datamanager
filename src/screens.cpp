@@ -7,6 +7,13 @@ WaggishSaucer62, 27/11/25
 #include "globals.h"
 
 
+screenID parseScreenID(const String &name) {
+    if (name == "0") return MAIN_SCREEN; // The enum class actually converts them to ints, starting from 0, so in the config it is stored as such.
+    if (name == "1") return SETTINGS_SCREEN;
+    if (name == "2") return POWER_SCREEN;
+}
+
+
 void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
     static unsigned long lastTouchRead = 0;
     static bool touchLastState = false;
@@ -32,6 +39,8 @@ void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
                 currentScreen = MAIN_SCREEN;
                 break;
         }
+        config.set("screen", String(currentScreen));
+        config.save("/config.cfg");
       }
     }
     touchLastState = pressed;
@@ -39,6 +48,7 @@ void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
 
 
 void mainScreenInit() {
+    tft.fillScreen(TFT_BLACK);
     rpmDial.init();
     fuelGauge.init();
     tempText.init();
@@ -46,13 +56,22 @@ void mainScreenInit() {
 }
 
 void settingsScreenInit() {
+    tft.fillScreen(TFT_BLACK);
     brightnessSlider.init(brightnessPercentage);
-    loggingToggle.init();
+    LEDbrightnessSlider.init(LEDbrightnessPercentage);
+    loggingToggle.init(false);
 }
 
 void powerScreenInit() {
-    // Empty for now
-}
+    tft.fillScreen(TFT_BLACK);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setTextSize(3);
+    tft.setTextDatum(TL_DATUM);
+    tft.drawString("Power:  0", 10, 10);
+    tft.drawString("Acceleration 0", 10, 40);
+    tft.drawString("Weight: 0", 10, 70);
+    powerGraph.init();
+    }
 
 
 
@@ -66,47 +85,29 @@ void mainScreen() {
 
 
 void powerScreen() {
-    static float powerInformation[4] = {0,0,0,0}; // prevSpeed, prevTime, currentSpeed, currentTime
     static uint32_t lastCalc = 0;
     static uint32_t lastUpdatedGraph = 0;
-    static float acceleration = 0;
     static float lastPower = 0;
-    static float smoothedPower = 0;
-    const float alpha = 0.05;    // 0–1, lower is smoother
 
-    if (millis() - lastCalc < 50) { // Every 50ms, calculate power and update related display items
-        float dragForce = 0.5*dragCoeff*frontalArea*airDensity*((powerInformation[2]/3.6)*(powerInformation[2]/3.6));
-        float fullWeight = mass + ((50*0.75*canBus.fuelPercent)/100);
-        float dt = (powerInformation[3] - powerInformation[1])/1000.0;
-        if ((powerInformation[2] - powerInformation[0] != 0) && dt > 0.0001f) {
-            acceleration = ((powerInformation[2]-powerInformation[0])/3.6)/dt;
+    if (millis() - lastCalc > 50) { // Every 50ms, calculate power and update related display items
+        powerCalc.calculatePower();
+
+        if (abs(powerCalc.smoothedPower - lastPower) > 0.1) { // CORRECT THIS - THIS IS A BUNCH OF PRINTS FOR DEBUGGING
+            tft.fillRect(0, 0, 320, 145, TFT_BLACK);
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setTextSize(3);
+            tft.setTextDatum(TL_DATUM);
+            tft.drawString("Power: " + String(powerCalc.smoothedPower, 1), 10, 10);
+            tft.drawString("Acceleration: " + String(powerCalc.acceleration, 1), 10, 40);
+            tft.drawString("Weight: " + String(powerCalc.fullWeight, 1), 10, 70);
+
+            lastPower = powerCalc.smoothedPower;
         }
-        float power = (((fullWeight*acceleration)+dragForce)*(powerInformation[2]/3.6))/745.7;
-        smoothedPower = smoothedPower + alpha * (power - smoothedPower);
-
-        if (abs(smoothedPower - lastPower) > 0.1) {
-        int textW = 250;
-        int textH = 60;
-        int x = tft.width() / 2;
-        int y = 100;
-
-        tft.fillRect(x - textW/2, y - textH/2, textW, textH, TFT_BLACK);
-        tft.setTextColor(TFT_WHITE, TFT_BLACK);
-        tft.setTextSize(6);
-        tft.setTextDatum(MC_DATUM);
-        tft.drawString(String(smoothedPower, 1), x, y);
-
-        lastPower = smoothedPower;
-        powerInformation[0] = powerInformation[2];
-        powerInformation[1] = powerInformation[3];
-        powerInformation[2] = canBus.spdAvg;
-        powerInformation[3] = millis();
-        }
+        lastCalc = millis();
     }
-    lastCalc = millis();
 
     if (millis()-lastUpdatedGraph > 30) { // Still update graph separately, to keep control of scanrate
-        powerGraph.update(smoothedPower);
+        powerGraph.update(powerCalc.smoothedPower);
         lastUpdatedGraph = millis();
     }
 }
@@ -119,20 +120,61 @@ void settingsScreen() {
 
     if (pressed == true) { // Slider can update as frequently as possible, but the button only triggers once per press.
         if ((xTouch >= (brightnessSlider.xPos-20)) && (xTouch < (brightnessSlider.xPos+20))) {
-        if (yTouch < brightnessSlider.yPos) {
-            brightnessPercentage = 0;
-        } else if (yTouch > (brightnessSlider.yPos+brightnessSlider.height)) {
-            brightnessPercentage = 100;
-        } else {
-        brightnessPercentage = ((yTouch-brightnessSlider.yPos)*100)/brightnessSlider.height;
-        }
-        brightnessSlider.update(brightnessPercentage);
-        analogWrite(22, map(brightnessPercentage, 100, 0, 0, 255));
+            if (yTouch <= brightnessSlider.yPos) {
+                brightnessPercentage = 100;
+            } else if (yTouch >= (brightnessSlider.yPos+brightnessSlider.height)) {
+                brightnessPercentage = 0;
+            } else {
+                brightnessPercentage = 100 - ((yTouch - brightnessSlider.yPos) * 100) / brightnessSlider.height;
+            }
+            brightnessSlider.update(brightnessPercentage);
+            analogWrite(22, map(brightnessPercentage, 0, 100, 0, 255));
+            config.set("screenBrightness", String(brightnessPercentage));
+            config.save("/config.cfg");
         }
 
-        if (lastPressedState == false) {
-            loggingToggle.checkIfPressed(xTouch, yTouch);
+        if ((xTouch >= (LEDbrightnessSlider.xPos-20)) && (xTouch < (LEDbrightnessSlider.xPos+20))) {
+            if (yTouch <= LEDbrightnessSlider.yPos) {
+                LEDbrightnessPercentage = 100;
+            } else if (yTouch >= (LEDbrightnessSlider.yPos+LEDbrightnessSlider.height)) {
+                LEDbrightnessPercentage = 0;
+            } else {
+                LEDbrightnessPercentage = 100 - ((yTouch - LEDbrightnessSlider.yPos) * 100) / LEDbrightnessSlider.height;
+            }
+            LEDbrightnessSlider.update(LEDbrightnessPercentage);
+            config.set("LEDsBrightness", String(LEDbrightnessPercentage));
+            config.save("/config.cfg");
+        }
+
+        if (lastPressedState == false) { // button only updates once per press.
+                if (loggingToggle.checkIfPressed(xTouch, yTouch)) {
+                bool state = loggingToggle.getState();
+                logger.loggingActive = state;
+                if (state == true) {
+                    logger.init();
+                } else {
+                    logger.close();
+                    tft.fillScreen(TFT_BLACK);
+                    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+                    tft.setTextSize(2);
+                    tft.setTextDatum(MC_DATUM);
+                    tft.drawString("Log saved to " + logger.fileName, tft.width()/2, tft.height()/2);
+                    delay(2000);
+
+                    switch (currentScreen) {
+                        case MAIN_SCREEN:
+                            mainScreenInit();
+                            break;
+                        case SETTINGS_SCREEN:
+                            settingsScreenInit();
+                            break;
+                        case POWER_SCREEN:
+                            powerScreenInit();
+                            break;
+                    }
+                }
+            }
         }
         lastPressedState = true;
     }
-};
+}

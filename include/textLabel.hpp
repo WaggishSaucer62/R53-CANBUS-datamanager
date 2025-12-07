@@ -10,7 +10,7 @@ WaggishSaucer62, 27/11/25
 
 class textLabel {
   private:
-    int lastVal = 0;
+  String lastVal = "";
 
   public:
     int xPos;
@@ -20,17 +20,20 @@ class textLabel {
         tft.setTextDatum(MC_DATUM);
         tft.setTextColor(TFT_WHITE, TFT_BLACK);
         tft.setTextSize(3);
-        tft.drawNumber(lastVal, xPos, yPos);
+        tft.drawString(lastVal, xPos, yPos);
     }
 
-    void update(int val) { // FIX THIS AND MAKE IT ACTUALLY BLANK A BOX THE RIGHT SIZE NOT AN ARBITRARY CIRCLE
+    void update(String val) {
         if (val != lastVal) {
-            tft.fillCircle(xPos, yPos, 20, TFT_BLACK);
             tft.setTextDatum(MC_DATUM);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setTextSize(3);
-            tft.drawNumber(val, xPos, yPos);
+            int16_t width = tft.textWidth(val);
+            int16_t height = tft.fontHeight();
+            tft.fillRect(xPos - (width / 2), yPos - (height / 2), width, height, DARKER_GREY);
+            tft.fillCircle(xPos, yPos, 20, TFT_BLACK);
+            tft.drawString(val, xPos, yPos);
             lastVal = val;
-  }
+        }
     }
 };

@@ -16,8 +16,6 @@ private:
     float minVal, maxVal;
     uint16_t *buffer;
     int index;
-    unsigned long lastReset;
-    unsigned long resetInterval;
     uint16_t bgColor;
 
 public:
@@ -26,6 +24,11 @@ public:
     {
         buffer = new uint16_t[width];
         for (int i = 0; i < width; i++) buffer[i] = y + height;
+        index = 0;
+    }
+
+    void init() {
+        tft.fillRect(x, y, width, height, bgColor);
         index = 0;
     }
 
