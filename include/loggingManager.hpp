@@ -10,30 +10,33 @@ WaggishSaucer62, 06/12/25
 
 class loggingManager {
     private:
-    String fileName;
-    using logPointer = std::variant< // Needed to hold pointers to different types of variables in canBus
-        int*,
-        float*,
-        double*,
-        bool*,
-        String*
-    >;
+        using logPointer = std::variant< // Needed to hold pointers to different types of variables in canBus
+            int*,
+            float*,
+            double*,
+            bool*,
+            String*
+        >;
 
-    SDCardReader& sd;
-    unsigned long lastLogTime = 0;
+        SDCardReader& sd;
+        unsigned long lastLogTime = 0;
 
-    String getNextLogFileName() {
-        int i = 0;
-        while (true) {
-            String name = "/log_" + String(i) + ".csv";
-            if (!SD.exists(name)) {
-                return name;
-            } else if (i >= 9999) {
-                return "/log_overflow.csv";
+        File logFile;
+        size_t bytesWritten = 0;
+        size_t lastFlushedSector = 0;
+
+        String getNextLogFileName() {
+            int i = 0;
+            while (true) {
+                String name = "/log_" + String(i) + ".csv";
+                if (!SD.exists(name)) {
+                    return name;
+                } else if (i >= 9999) {
+                    return "/log_overflow.csv";
+                }
+                i++;
             }
-            i++;
         }
-    }
 
     public:
         loggingManager(SDCardReader& reader) : sd(reader) {}
@@ -42,9 +45,18 @@ class loggingManager {
         int logIntervalMs;
         bool loggingActive = false;
 
+        String fileName;
+
         void init() {
             fileName = getNextLogFileName();
-            String headerLine = "";
+            logFile = SD.open(fileName, FILE_WRITE);
+
+            if (!logFile) {
+                // ADD ERROR MESSAGES HERE
+                return;
+            }
+
+            String headerLine = "timestamp,";
             for (auto &keyValue : data) {
                 if (headerLine != "") {
                     headerLine += ",";
@@ -52,7 +64,9 @@ class loggingManager {
                 headerLine += keyValue.first;
             }
             headerLine += "\n";
-            sd.writeFile(fileName, headerLine);
+            bytesWritten += logFile.print(headerLine);
+            logFile.flush();
+            lastLogTime = millis();
         }
 
         void log() {
@@ -60,18 +74,38 @@ class loggingManager {
                 return;
             }
 
-            String newLine = "";
+            String newLine;
+            newLine.reserve(96); // Basic calculations plus a bunch of overhead for my bad maths.
+            newLine = String(millis()) + ",";
+
             for (auto &keyValue : data) {
                 if (newLine != "") {
                     newLine += ",";
                 }
                 std::visit([&newLine](auto pointer){
-                    newLine += *pointer;
+                    newLine += String(*pointer);
                 }, keyValue.second);
             }
 
             newLine += "\n";
-            sd.appendFile(fileName, newLine);
+            bytesWritten += logFile.print(newLine);
+
+            size_t currentSector = bytesWritten / 512;
+
+            if (currentSector != lastFlushedSector) {
+                logFile.flush();
+                lastFlushedSector = currentSector;
+            }
             lastLogTime = millis();
+        }
+
+        void close() {
+            if (logFile) {
+                logFile.flush();
+                logFile.close();
+                bytesWritten = 0;
+                lastFlushedSector = 0;
+                loggingActive = false;
+            }
         }
 };

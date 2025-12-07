@@ -48,6 +48,7 @@ void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
 
 
 void mainScreenInit() {
+    tft.fillScreen(TFT_BLACK);
     rpmDial.init();
     fuelGauge.init();
     tempText.init();
@@ -55,12 +56,14 @@ void mainScreenInit() {
 }
 
 void settingsScreenInit() {
+    tft.fillScreen(TFT_BLACK);
     brightnessSlider.init(brightnessPercentage);
     LEDbrightnessSlider.init(LEDbrightnessPercentage);
-    loggingToggle.init(config.get("loggingToggle", "0").toInt());
+    loggingToggle.init(false);
 }
 
 void powerScreenInit() {
+    tft.fillScreen(TFT_BLACK);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     tft.setTextSize(3);
     tft.setTextDatum(TL_DATUM);
@@ -143,14 +146,33 @@ void settingsScreen() {
             config.save("/config.cfg");
         }
 
-        if (lastPressedState == false) {
-            loggingToggle.checkIfPressed(xTouch, yTouch);
-            bool state = loggingToggle.getState();
-            config.set("loggingToggle", String(state));
-            config.save("/config.cfg");
-            logger.loggingActive = state;
-            if (state == true) {
-                logger.init();
+        if (lastPressedState == false) { // button only updates once per press.
+                if (loggingToggle.checkIfPressed(xTouch, yTouch)) {
+                bool state = loggingToggle.getState();
+                logger.loggingActive = state;
+                if (state == true) {
+                    logger.init();
+                } else {
+                    logger.close();
+                    tft.fillScreen(TFT_BLACK);
+                    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+                    tft.setTextSize(2);
+                    tft.setTextDatum(MC_DATUM);
+                    tft.drawString("Log saved to " + logger.fileName, tft.width()/2, tft.height()/2);
+                    delay(2000);
+
+                    switch (currentScreen) {
+                        case MAIN_SCREEN:
+                            mainScreenInit();
+                            break;
+                        case SETTINGS_SCREEN:
+                            settingsScreenInit();
+                            break;
+                        case POWER_SCREEN:
+                            powerScreenInit();
+                            break;
+                    }
+                }
             }
         }
         lastPressedState = true;

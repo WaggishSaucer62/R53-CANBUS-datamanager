@@ -44,12 +44,14 @@ class button {
             state = newState;
         }
 
-        void checkIfPressed(uint16_t touchX, uint16_t touchY) {
+        bool checkIfPressed(uint16_t touchX, uint16_t touchY) {
             int dx = touchX - xPos;
             int dy = touchY - yPos;
             if (dx*dx + dy*dy <= radius*radius) {
                 update(!state);
+                return true;
             }
+            return false;
         }
 
         bool getState() {

@@ -111,7 +111,6 @@ void setup(void) {
     powerCalc.mass = config.get("mass", "1215.0").toFloat();
 
     logger.logIntervalMs = config.get("loggingRate", "500").toInt();
-    logger.loggingActive = (config.get("loggingToggle", "0").toInt());
 
     logger.data["rpm"] = &canBus.rpm;
     logger.data["speed"] = &canBus.spdAvg;
@@ -149,6 +148,7 @@ void loop() {
         pressed = tft.getTouch(&xTouch, &yTouch);
         checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
         
+        shiftDotsLED.update(canBus.rpm); // Update LEDs every frame irrespective of screen
         switch(currentScreen) {
         case MAIN_SCREEN:
             mainScreen();
