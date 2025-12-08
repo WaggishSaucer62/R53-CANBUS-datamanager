@@ -28,12 +28,16 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
 
 ## Parts List:
 ### Main electronics
- - 38 pin ESP32 dev module
- - MCP2515 CAN transciever
- - 240x320 2.8" SPI TFT LCD Touch screen with ILI9341 driver and built in SD card reader
- - 12v to 5v buck converter if required
+ - 38 pin ESP32 dev module.
+ - MCP2515 CAN transciever.
+ - 240x320 2.8" SPI TFT LCD Touch screen with ILI9341 driver and built in SD card reader.
+ - 12v to 5v buck converter if required.
  - PCB has a port for an ARGB strip, I will use a WS2812B controlled one, but the codebase does not yet use it.
- - Main PCB
+ - Main PCB.
+ - SD card.
+ - Depending on your source of power and its quality, it may be required to use a power filter board. There is a schematic for one that JLCPCB can produce in the files.
+ - 3D printed frame or other mounting method.
+ - Heat set inserts for printed frame (exact sizes in assembly instructions in the wiki).
 
 ### Cable to connect to car
 It just needs access to CANBUS wires and power from anywhere, as I did not want to damage the original wiring, I created a custom cable that goes inbetween the stock cable and the tacho, splitting off 12v power and CANBUS high/low
@@ -45,7 +49,6 @@ The connector to look for is "IL-AG5-7S-S3C1", this is the listing I bought it f
  - For some reason, if the car 12v power is connected to the module, **remote locking for the car works intermittently**, but does not affect key based locking. The issue occurs with either power and data, or just power wires plugged in, I have not tested data only.
  - Acceleration values randomly blow up over several thousand in power calculations.
  - RPM arc is sometimes backfilled with a solid colour for no intended reason.
- - Extra logs are created occasionally.
 
 
 ## Installation:
@@ -61,7 +64,7 @@ Throughout both methods, when flashing to the ESP32, you may need to press the b
  -  If required, you can manually select the COM port of your microcontroller by clicking the plug icon in the bottom bar.
 
 ### From Build Files:
- - Note: This method DOES NOT support changing the LED strip length off of the precompiled value (5 LEDs for a 60LED/M strip), due to a limitation in the ARGB library used.
+ - Note: This method DOES NOT support changing the LED strip length from the precompiled value (5 LEDs for a 60LED/M strip), due to a limitation in the ARGB library used.
  - Install python
  - Run `pip install esptool`
  - Download the bootloader.bin, partitions.bin, and firmware.bin files from the latest release.
