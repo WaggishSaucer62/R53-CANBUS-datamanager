@@ -20,8 +20,8 @@ class button {
         String text;
         bool state;
 
-        void init(bool initialState) {
-            if (initialState == true) {
+        void init() {
+            if (state == true) {
                 tft.fillCircle(xPos, yPos, radius, colourOn);
             } else {
                 tft.fillCircle(xPos, yPos, radius, colourOff);
@@ -30,8 +30,6 @@ class button {
             tft.setTextSize(1);
             tft.setTextDatum(MC_DATUM);
             tft.drawString(text, xPos, yPos+radius+5);
-
-            state = initialState;
         }
 
         void update(bool newState) {
@@ -52,9 +50,5 @@ class button {
                 return true;
             }
             return false;
-        }
-
-        bool getState() {
-            return state;
         }
 };

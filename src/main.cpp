@@ -6,6 +6,9 @@
 #include "functions.h"
 #include "globals.h"
 
+unsigned long lastDraw = 0;
+unsigned long lastPowerCalc = 0;
+
 
 void setup(void) {
     Serial.begin(115200);
@@ -140,7 +143,6 @@ void setup(void) {
 
 
 void loop() {
-    static unsigned long lastDraw = 0;
     canBus.update();
     logger.log();
 
@@ -161,5 +163,10 @@ void loop() {
             break;
         }
         lastDraw = millis();
+    }
+
+    if (millis() - lastPowerCalc >= logger.logIntervalMs) {
+        powerCalc.calculatePower();
+        lastPowerCalc = millis();
     }
 }

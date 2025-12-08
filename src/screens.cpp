@@ -59,7 +59,7 @@ void settingsScreenInit() {
     tft.fillScreen(TFT_BLACK);
     brightnessSlider.init(brightnessPercentage);
     LEDbrightnessSlider.init(LEDbrightnessPercentage);
-    loggingToggle.init(false);
+    loggingToggle.init();
 }
 
 void powerScreenInit() {
@@ -90,8 +90,6 @@ void powerScreen() {
     static float lastPower = 0;
 
     if (millis() - lastCalc > 50) { // Every 50ms, calculate power and update related display items
-        powerCalc.calculatePower();
-
         if (abs(powerCalc.smoothedPower - lastPower) > 0.1) { // CORRECT THIS - THIS IS A BUNCH OF PRINTS FOR DEBUGGING
             tft.fillRect(0, 0, 320, 145, TFT_BLACK);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -148,7 +146,7 @@ void settingsScreen() {
 
         if (lastPressedState == false) { // button only updates once per press.
                 if (loggingToggle.checkIfPressed(xTouch, yTouch)) {
-                bool state = loggingToggle.getState();
+                bool state = loggingToggle.state;
                 logger.loggingActive = state;
                 if (state == true) {
                     logger.init();
