@@ -74,12 +74,10 @@ class loggingManager {
 
             String newLine;
             newLine.reserve(96); // Basic calculations plus a bunch of overhead for my bad maths.
-            newLine = String(millis()) + ",";
+            newLine = String(millis());
 
             for (auto &keyValue : data) {
-                if (newLine != "") {
-                    newLine += ",";
-                }
+                newLine += ",";
                 std::visit([&newLine](auto pointer){
                     newLine += String(*pointer);
                 }, keyValue.second);
