@@ -10,11 +10,11 @@ WaggishSaucer62, 27/11/25
 
 class CANBUS {
     public:
-        int rpm;
-        float spdAvg;
-        int throttlePos;
-        int fuelPercent;
-        String externalTemp;
+        int rpm = 0;
+        float spdAvg = 0;
+        int throttlePos = 0;
+        int fuelPercent = 100;
+        String externalTemp = "0";
 
         void update() {
             while (CAN.checkReceive() == CAN_MSGAVAIL) {

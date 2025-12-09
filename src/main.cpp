@@ -183,7 +183,7 @@ void loop() {
         lastPowerCalc = millis();
     }
 
-    if (canInit == true && millis() - lastFuelCheck > 5000) {
+    if (millis() - lastFuelCheck > 5000) {
         if (canBus.fuelPercent <= fuelWarningLevel) {
             fullscreenWarning("CHECK FUEL");
         }
