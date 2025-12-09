@@ -8,6 +8,7 @@
 
 unsigned long lastDraw = 0;
 unsigned long lastPowerCalc = 0;
+unsigned long lastFuelCheck = 0;
 
 
 void setup(void) {
@@ -123,9 +124,8 @@ void setup(void) {
     logger.data["power"] = &powerCalc.smoothedPower;
     logger.data["acceleration"] = &powerCalc.acceleration;
     logger.data["fullWeight"] = &powerCalc.fullWeight;
-    if (logger.loggingActive) {
-        logger.init();
-    }
+
+    fuelWarningLevel = config.get("fuelWarningLevel", "5").toInt();
 
     // Initialise the screen as per the loaded config
     switch(currentScreen) {
@@ -168,5 +168,12 @@ void loop() {
     if (millis() - lastPowerCalc >= logger.logIntervalMs) {
         powerCalc.calculatePower();
         lastPowerCalc = millis();
+    }
+
+    if (millis() - lastFuelCheck > 5000) {
+        if (canBus.fuelPercent <= fuelWarningLevel) {
+            fullscreenWarning("CHECK FUEL");
+        }
+        lastFuelCheck = millis();
     }
 }

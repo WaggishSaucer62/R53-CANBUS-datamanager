@@ -47,6 +47,8 @@ extern int LEDbrightnessPercentage;
 
 extern bool lastPressedState;
 
+extern int fuelWarningLevel;
+
 
 #include "arcDial.hpp"
 #include "verticalBarGauge.hpp"

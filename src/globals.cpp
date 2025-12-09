@@ -25,6 +25,8 @@ int LEDbrightnessPercentage = 100;
 
 bool lastPressedState = false;
 
+int fuelWarningLevel = 5;
+
 
 arcDial rpmDial;
 verticalBar fuelGauge;
