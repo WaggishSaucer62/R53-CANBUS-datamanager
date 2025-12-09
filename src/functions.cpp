@@ -10,6 +10,8 @@ WaggishSaucer62, 27/11/25
 
 void fullscreenWarning(String text) {
     tft.fillScreen(TFT_RED);
+    tft.setTextSize(4);
+    tft.setTextDatum(MC_DATUM);
     tft.drawString(text, tft.width() / 2, tft.height() / 2);
     delay(10000);
     tft.fillScreen(TFT_BLACK);

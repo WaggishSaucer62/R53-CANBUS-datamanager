@@ -10,6 +10,9 @@ unsigned long lastDraw = 0;
 unsigned long lastPowerCalc = 0;
 unsigned long lastFuelCheck = 0;
 
+bool sdInit = false;
+bool canInit = false;
+
 
 void setup(void) {
     Serial.begin(115200);
@@ -26,14 +29,16 @@ void setup(void) {
     SPI.begin(18, 19, 23);
 
     if (!SD.begin(SD_CS)) {
-        Serial.println("SD FAIL");
+        sdInit = false;
+    } else {
+        sdInit = true;
     }
 
     if (CAN.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
-        Serial.println("MCP2515 Init OK!");
+        canInit = true;
         CAN.setMode(MCP_NORMAL);
     } else {
-        Serial.println("MCP2515 Init FAIL!");
+        canInit = false;
     }
 
     // Now initialize TFT
@@ -98,7 +103,7 @@ void setup(void) {
     // calibrateAndPrintTouchData(); // UNCOMMENT, COMMENT OUT LOOP TO CALIBRATE TOUCH, prints calibration data to serial
 
 
-    // Load and apply config file settings, second value is default if key not found
+    // Load and apply config file settings, second value is default if key not found or SD fails
     config.load("/config.cfg");
 
     brightnessPercentage = config.get("screenBrightness", "100").toInt();
@@ -107,7 +112,7 @@ void setup(void) {
 
     LEDbrightnessPercentage = config.get("LEDsBrightness", "100").toInt();
     shiftDotsLED.flashSpeed = config.get("LEDsFlashingSpeed", "60").toInt();
-    shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "6000").toInt();
+    shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "123435").toInt();
 
     powerCalc.dragCoeff = config.get("dragCoeff", "0.39").toFloat();
     powerCalc.airDensity = config.get("airDensity", "1.225").toFloat();
@@ -126,6 +131,14 @@ void setup(void) {
     logger.data["fullWeight"] = &powerCalc.fullWeight;
 
     fuelWarningLevel = config.get("fuelWarningLevel", "5").toInt();
+
+
+    if (sdInit == false) {
+        fullscreenWarning("SD INIT FAIL");
+    }
+    if (canInit == false) {
+        fullscreenWarning("CAN INIT FAIL");
+    }
 
     // Initialise the screen as per the loaded config
     switch(currentScreen) {
@@ -170,7 +183,7 @@ void loop() {
         lastPowerCalc = millis();
     }
 
-    if (millis() - lastFuelCheck > 5000) {
+    if (canInit == true && millis() - lastFuelCheck > 5000) {
         if (canBus.fuelPercent <= fuelWarningLevel) {
             fullscreenWarning("CHECK FUEL");
         }
