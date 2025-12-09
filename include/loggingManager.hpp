@@ -56,11 +56,9 @@ class loggingManager {
                 return;
             }
 
-            String headerLine = "timestamp,";
+            String headerLine = "timestamp";
             for (auto &keyValue : data) {
-                if (headerLine != "") {
-                    headerLine += ",";
-                }
+                headerLine += ",";
                 headerLine += keyValue.first;
             }
             headerLine += "\n";
