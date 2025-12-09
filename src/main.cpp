@@ -124,7 +124,7 @@ void setup(void) {
 
     logger.data["rpm"] = &canBus.rpm;
     logger.data["speed"] = &canBus.spdAvg;
-    logger.data["throttlePos"] = &canBus.throttlePos;
+    logger.data["Throttle Position"] = &canBus.throttlePos;
     logger.data["fuelPercent"] = &canBus.fuelPercent;
     logger.data["externalTemp"] = &canBus.externalTemp;
     logger.data["power"] = &powerCalc.smoothedPower;
