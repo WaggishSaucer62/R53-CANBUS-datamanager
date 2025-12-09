@@ -12,6 +12,7 @@ unsigned long lastFuelCheck = 0;
 
 bool sdInit = false;
 bool canInit = false;
+bool fuelWarned = false;
 
 
 void setup(void) {
@@ -183,9 +184,10 @@ void loop() {
         lastPowerCalc = millis();
     }
 
-    if (millis() - lastFuelCheck > 5000) {
+    if (fuelWarned == false && (millis() - lastFuelCheck >= 1000)) {
         if (canBus.fuelPercent <= fuelWarningLevel) {
             fullscreenWarning("CHECK FUEL");
+            fuelWarned = true;
         }
         lastFuelCheck = millis();
     }
