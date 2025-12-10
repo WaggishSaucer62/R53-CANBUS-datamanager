@@ -49,6 +49,11 @@ extern bool lastPressedState;
 
 extern int fuelWarningLevel;
 
+extern int autoLoggingThreshold;
+
+extern int stopDrawForMillis;
+extern bool reinit;
+
 
 #include "arcDial.hpp"
 #include "verticalBarGauge.hpp"
@@ -71,6 +76,7 @@ extern verticalBar throttleGauge;
 extern shiftCueDots shiftDots;
 extern textLabel tempText;
 extern button loggingToggle;
+extern button autoLoggingToggle;
 extern verticalSlider brightnessSlider;
 extern verticalSlider LEDbrightnessSlider;
 extern rollingGraph powerGraph;
@@ -79,4 +85,5 @@ extern SDCardReader sd;
 extern shiftCueDotsLED shiftDotsLED;
 extern configManager config;
 extern loggingManager logger;
+extern loggingManager autoLogger;
 extern powerCalculator powerCalc;

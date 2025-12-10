@@ -60,6 +60,7 @@ void settingsScreenInit() {
     brightnessSlider.init(brightnessPercentage);
     LEDbrightnessSlider.init(LEDbrightnessPercentage);
     loggingToggle.init();
+    autoLoggingToggle.init();
 }
 
 void powerScreenInit() {
@@ -144,10 +145,10 @@ void settingsScreen() {
             config.save("/config.cfg");
         }
 
-        if (lastPressedState == false) { // button only updates once per press.
-                if (loggingToggle.checkIfPressed(xTouch, yTouch)) {
+        if (lastPressedState == false) { // buttons only updates once per press.
+            if (loggingToggle.checkIfPressed(xTouch, yTouch)) {
                 bool state = loggingToggle.state;
-                logger.loggingActive = state;
+                logger.loggingEnabled = state;
                 if (state == true) {
                     logger.init();
                 } else {
@@ -157,20 +158,20 @@ void settingsScreen() {
                     tft.setTextSize(2);
                     tft.setTextDatum(MC_DATUM);
                     tft.drawString("Log saved to " + logger.fileName, tft.width()/2, tft.height()/2);
-                    delay(2000);
-
-                    switch (currentScreen) {
-                        case MAIN_SCREEN:
-                            mainScreenInit();
-                            break;
-                        case SETTINGS_SCREEN:
-                            settingsScreenInit();
-                            break;
-                        case POWER_SCREEN:
-                            powerScreenInit();
-                            break;
-                    }
+                    stopDrawForMillis = millis() + 2000;
+                    reinit = true;
                 }
+            }
+
+            if (autoLoggingToggle.checkIfPressed(xTouch, yTouch)) { // This checks if pressed, automatically toggles the state if pressed, and returns whether or not it was pressed (bool).
+                bool state = autoLoggingToggle.state;
+                autoLogger.loggingEnabled = state;
+                if (state == true) {
+                    config.set("autoLoggingToggle", "1");
+                } else {
+                    config.set("autoLoggingToggle", "0");
+                }
+                config.save("/config.cfg");
             }
         }
         lastPressedState = true;

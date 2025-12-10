@@ -43,6 +43,7 @@ class loggingManager {
         std::map<String, logPointer> data; // stores pair of data (actually a pointer to the canbus object var) and name, eg. speed -> 50
 
         int logIntervalMs;
+        bool loggingEnabled = false;
         bool loggingActive = false;
 
         String fileName;
@@ -65,16 +66,17 @@ class loggingManager {
             bytesWritten += logFile.print(headerLine);
             logFile.flush();
             lastLogTime = millis();
+            loggingActive = true;
         }
 
         void log() {
-            if ((millis() - lastLogTime < logIntervalMs) || (loggingActive == false)) {
+            if (millis() - lastLogTime < logIntervalMs) {
                 return;
             }
 
             String newLine;
-            newLine.reserve(96); // Basic calculations plus a bunch of overhead for my bad maths.
-            newLine = String(millis());
+            newLine.reserve(96); // 96 gotten from basic calculations plus a bunch of overhead for my bad maths.
+            newLine = String(millis()/1000); // Covert to seconds for virtualDyno.
 
             for (auto &keyValue : data) {
                 newLine += ",";

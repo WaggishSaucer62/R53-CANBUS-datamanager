@@ -13,19 +13,6 @@ void fullscreenWarning(String text) {
     tft.setTextSize(4);
     tft.setTextDatum(MC_DATUM);
     tft.drawString(text, tft.width() / 2, tft.height() / 2);
-    delay(10000);
-    tft.fillScreen(TFT_BLACK);
-    switch(currentScreen) {
-    case MAIN_SCREEN:
-        mainScreenInit();
-        break;
-    case SETTINGS_SCREEN:
-        settingsScreenInit();
-        break;
-    case POWER_SCREEN:
-        powerScreenInit();
-        break;
-    }
 }
 
 

@@ -14,6 +14,8 @@ bool sdInit = false;
 bool canInit = false;
 bool fuelWarned = false;
 
+unsigned long countThrottlePosUnderThreshold = 0;
+
 
 void setup(void) {
     Serial.begin(115200);
@@ -89,6 +91,14 @@ void setup(void) {
     loggingToggle.text = "Logging";
     loggingToggle.state = false;
 
+    autoLoggingToggle.xPos = 200;
+    autoLoggingToggle.yPos = 160;
+    autoLoggingToggle.radius = 20;
+    autoLoggingToggle.colourOn = TFT_GREEN;
+    autoLoggingToggle.colourOff = TFT_RED;
+    autoLoggingToggle.text = "Auto Logging";
+    autoLoggingToggle.state = false;
+
     brightnessSlider.xPos = 30;
     brightnessSlider.yPos = 30;
     brightnessSlider.height = 180;
@@ -122,6 +132,10 @@ void setup(void) {
 
     logger.logIntervalMs = config.get("loggingRate", "500").toInt();
 
+    autoLoggingThreshold = config.get("autoLoggingThreshold", "70").toInt();
+    autoLoggingToggle.state = config.get("autoLoggingToggle", "0").toInt();
+    autoLogger.loggingEnabled = config.get("autoLoggingToggle", "0").toInt();
+
     logger.data["rpm"] = &canBus.rpm;
     logger.data["speed"] = &canBus.spdAvg;
     logger.data["Throttle Position"] = &canBus.throttlePos;
@@ -131,14 +145,25 @@ void setup(void) {
     logger.data["acceleration"] = &powerCalc.acceleration;
     logger.data["fullWeight"] = &powerCalc.fullWeight;
 
+    autoLogger.data["rpm"] = &canBus.rpm;
+    autoLogger.data["speed"] = &canBus.spdAvg;
+    autoLogger.data["Throttle Position"] = &canBus.throttlePos;
+    autoLogger.data["fuelPercent"] = &canBus.fuelPercent;
+    autoLogger.data["externalTemp"] = &canBus.externalTemp;
+    autoLogger.data["power"] = &powerCalc.smoothedPower;
+    autoLogger.data["acceleration"] = &powerCalc.acceleration;
+    autoLogger.data["fullWeight"] = &powerCalc.fullWeight;
+
     fuelWarningLevel = config.get("fuelWarningLevel", "5").toInt();
 
 
     if (sdInit == false) {
         fullscreenWarning("SD INIT FAIL");
+        delay(5000);
     }
     if (canInit == false) {
         fullscreenWarning("CAN INIT FAIL");
+        delay(5000);
     }
 
     // Initialise the screen as per the loaded config
@@ -158,26 +183,73 @@ void setup(void) {
 
 void loop() {
     canBus.update();
-    logger.log();
-
-    if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
-        pressed = tft.getTouch(&xTouch, &yTouch);
-        checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
-        
-        shiftDotsLED.update(canBus.rpm); // Update LEDs every frame irrespective of screen
-        switch(currentScreen) {
-        case MAIN_SCREEN:
-            mainScreen();
-            break;
-        case SETTINGS_SCREEN:
-            settingsScreen();
-            break;
-        case POWER_SCREEN:
-            powerScreen();
-            break;
-        }
-        lastDraw = millis();
+    if (logger.loggingEnabled == true) {
+        logger.log();
     }
+    if (autoLogger.loggingEnabled == true) {
+        if (canBus.throttlePos >= autoLoggingThreshold) {
+            if (autoLogger.loggingActive == false) {
+                autoLogger.init();
+                countThrottlePosUnderThreshold = 0;
+            }
+            autoLogger.log();
+        }
+
+        if (autoLogger.loggingActive == true) {
+            if (canBus.throttlePos < autoLoggingThreshold) {
+                countThrottlePosUnderThreshold++;
+                if (countThrottlePosUnderThreshold >= 10) {
+                    autoLogger.close();
+                    tft.fillScreen(TFT_BLACK);
+                    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+                    tft.setTextSize(2);
+                    tft.setTextDatum(MC_DATUM);
+                    tft.drawString("Log saved to " + autoLogger.fileName, tft.width()/2, tft.height()/2);
+                    stopDrawForMillis = millis() + 2000;
+                    reinit = true;
+                }
+            }
+        }
+    }
+    
+    
+
+    if (millis() > stopDrawForMillis) { // Only draw when it hasn't been disabled for a time by another function (used by warnings and info screens)
+        if (millis() - lastDraw > 20) { // Only draw and check touch at 50fps
+            if (reinit == true) {
+                switch (currentScreen) {
+                    case MAIN_SCREEN:
+                        mainScreenInit();
+                        break;
+                    case SETTINGS_SCREEN:
+                        settingsScreenInit();
+                        break;
+                    case POWER_SCREEN:
+                        powerScreenInit();
+                        break;
+                }
+                reinit = false;
+            }
+
+            pressed = tft.getTouch(&xTouch, &yTouch);
+            checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
+            
+            shiftDotsLED.update(canBus.rpm); // Update LEDs every frame irrespective of screen
+            switch(currentScreen) {
+            case MAIN_SCREEN:
+                mainScreen();
+                break;
+            case SETTINGS_SCREEN:
+                settingsScreen();
+                break;
+            case POWER_SCREEN:
+                powerScreen();
+                break;
+            }
+            lastDraw = millis();
+        }
+    }
+    
 
     if (millis() - lastPowerCalc >= logger.logIntervalMs) {
         powerCalc.calculatePower();
@@ -187,6 +259,8 @@ void loop() {
     if (fuelWarned == false && (millis() - lastFuelCheck >= 1000)) {
         if (canBus.fuelPercent <= fuelWarningLevel) {
             fullscreenWarning("CHECK FUEL");
+            stopDrawForMillis = millis() + 2000;
+            reinit = true;
             fuelWarned = true;
         }
         lastFuelCheck = millis();

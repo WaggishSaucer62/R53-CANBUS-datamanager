@@ -27,6 +27,10 @@ bool lastPressedState = false;
 
 int fuelWarningLevel = 5;
 
+int autoLoggingThreshold = 70;
+
+int stopDrawForMillis = 0;
+bool reinit = false;
 
 arcDial rpmDial;
 verticalBar fuelGauge;
@@ -34,6 +38,7 @@ verticalBar throttleGauge;
 shiftCueDots shiftDots;
 textLabel tempText;
 button loggingToggle;
+button autoLoggingToggle;
 verticalSlider brightnessSlider;
 verticalSlider LEDbrightnessSlider;
 rollingGraph powerGraph(tft, 10, 150, 300, 80, 0, 200);
@@ -42,4 +47,5 @@ SDCardReader sd(SD);
 shiftCueDotsLED shiftDotsLED;
 configManager config(sd);
 loggingManager logger(sd);
+loggingManager autoLogger(sd);
 powerCalculator powerCalc(canBus);
