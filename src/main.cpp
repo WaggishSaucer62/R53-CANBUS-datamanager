@@ -14,7 +14,8 @@ bool sdInit = false;
 bool canInit = false;
 bool fuelWarned = false;
 
-unsigned long countThrottlePosUnderThreshold = 0;
+int autoLogCloseAfterTime;
+int throttleBelowStartTime = 0;
 
 
 void setup(void) {
@@ -135,6 +136,8 @@ void setup(void) {
     autoLoggingThreshold = config.get("autoLoggingThreshold", "70").toInt();
     autoLoggingToggle.state = config.get("autoLoggingToggle", "0").toInt();
     autoLogger.loggingEnabled = config.get("autoLoggingToggle", "0").toInt();
+    autoLogCloseAfterTime = config.get("autoLogCloseAfterTimeMS", "10000").toInt();
+    autoLogger.logIntervalMs = config.get("loggingRate", "500").toInt();
 
     logger.data["rpm"] = &canBus.rpm;
     logger.data["speed"] = &canBus.spdAvg;
@@ -188,17 +191,19 @@ void loop() {
     }
     if (autoLogger.loggingEnabled == true) {
         if (canBus.throttlePos >= autoLoggingThreshold) {
+            throttleBelowStartTime = 0;
             if (autoLogger.loggingActive == false) {
                 autoLogger.init();
-                countThrottlePosUnderThreshold = 0;
             }
             autoLogger.log();
         }
 
         if (autoLogger.loggingActive == true) {
-            if (canBus.throttlePos < autoLoggingThreshold) {
-                countThrottlePosUnderThreshold++;
-                if (countThrottlePosUnderThreshold >= 10) {
+            if (canBus.throttlePos < autoLoggingThreshold) { // Close log after configurable amount of seconds under throttle threshold.
+                if (throttleBelowStartTime == 0) {
+                    throttleBelowStartTime = millis();
+                }
+                if (millis() - throttleBelowStartTime >= autoLogCloseAfterTime) {
                     autoLogger.close();
                     tft.fillScreen(TFT_BLACK);
                     tft.setTextColor(TFT_WHITE, TFT_BLACK);
