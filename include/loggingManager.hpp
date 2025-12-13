@@ -87,12 +87,12 @@ class loggingManager {
             }
             logFile.print("\n");
 
-            if (now - lastFlushTime >= 1000) { // Flushes data every second
+            if (now - lastFlushTime >= 1000) {
                 logFile.flush();
                 lastFlushTime = now;
             }
 
-            if (now - lastReopenTime >= 10000) { // Opens and closes file every 10 seconds
+            if (now - lastReopenTime >= 10000) {
                 logFile.flush();
                 logFile.close();
                 logFile = SD.open(fileName, FILE_APPEND);
