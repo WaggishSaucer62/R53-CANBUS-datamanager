@@ -19,7 +19,7 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
  - [x] Complete and upload PCBs.
  - [x] Complete and upload 3D printed models for housings and mounts.
  - [ ] Scan for other dataframes and attempt to decode them.
- - [ ] Add wiring diagram for car cable splitter to README.
+ - [x] Add wiring diagram for car cable splitter to README.
  - [x] Add ARGB strip functionality
  - [x] Create a config file (led count, rpm band settings etc.)
  - [ ] Make shift dots procedural (points where each dot switches state is not hard coded, but rather calcuated off of an input max/min/no. dots)
