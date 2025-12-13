@@ -18,6 +18,7 @@ class verticalSlider {
         int height;
         int width;
         int radius;
+        String label;
         
 
         void init(int initPercent) {
@@ -25,6 +26,11 @@ class verticalSlider {
             lastPercent = initPercent;
             tft.fillRect(xPos - width/2, yPos, width, height, TFT_WHITE);
             tft.fillCircle(xPos, yPos + height - ((height*percentage)/100), radius, TFT_WHITE);
+
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setTextSize(1);
+            tft.setTextDatum(MC_DATUM);
+            tft.drawString(label, xPos, yPos - 5 - radius);
         }
 
         void update(int newPercent) {

@@ -101,16 +101,18 @@ void setup(void) {
     autoLoggingToggle.state = false;
 
     brightnessSlider.xPos = 30;
-    brightnessSlider.yPos = 30;
-    brightnessSlider.height = 180;
+    brightnessSlider.yPos = 35;
+    brightnessSlider.height = 170;
     brightnessSlider.width = 6;
     brightnessSlider.radius = 20;
+    brightnessSlider.label = "Screen";
 
     LEDbrightnessSlider.xPos = 90;
-    LEDbrightnessSlider.yPos = 30;
-    LEDbrightnessSlider.height = 180;
+    LEDbrightnessSlider.yPos = 35;
+    LEDbrightnessSlider.height = 170;
     LEDbrightnessSlider.width = 6;
     LEDbrightnessSlider.radius = 20;
+    LEDbrightnessSlider.label = "LEDs";
 
     // calibrateAndPrintTouchData(); // UNCOMMENT, COMMENT OUT LOOP TO CALIBRATE TOUCH, prints calibration data to serial
 

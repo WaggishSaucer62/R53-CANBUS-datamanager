@@ -19,11 +19,11 @@ class loggingManager {
         >;
 
         SDCardReader& sd;
-        unsigned long lastLogTime = 0;
-
         File logFile;
-        size_t bytesWritten = 0;
-        size_t lastFlushedSector = 0;
+
+        unsigned long lastLogTime = 0;
+        unsigned long lastFlushTime = 0;
+        unsigned long lastReopenTime = 0;
 
         String getNextLogFileName() {
             int i = 0;
@@ -42,7 +42,7 @@ class loggingManager {
         loggingManager(SDCardReader& reader) : sd(reader) {}
         std::map<String, logPointer> data; // stores pair of data (actually a pointer to the canbus object var) and name, eg. speed -> 50
 
-        int logIntervalMs;
+        int logIntervalMs = 100; // Default
         bool loggingEnabled = false;
         bool loggingActive = false;
 
@@ -57,43 +57,48 @@ class loggingManager {
                 return;
             }
 
-            String headerLine = "timestamp";
-            for (auto &keyValue : data) {
-                headerLine += ",";
-                headerLine += keyValue.first;
+            logFile.print("timestamp");
+            for (auto &kv : data) {
+                logFile.print(",");
+                logFile.print(kv.first);
             }
-            headerLine += "\n";
-            bytesWritten += logFile.print(headerLine);
+            logFile.print("\n");
             logFile.flush();
+
             lastLogTime = millis();
+            lastFlushTime = millis();
+            lastReopenTime = millis();
             loggingActive = true;
         }
 
         void log() {
-            if (millis() - lastLogTime < logIntervalMs) {
+            unsigned long now = millis();
+            if (now - lastLogTime < logIntervalMs) {
                 return;
             }
 
-            String newLine;
-            newLine.reserve(96); // 96 gotten from basic calculations plus a bunch of overhead for my bad maths.
-            newLine = String(millis()/1000); // Covert to seconds for virtualDyno.
+            logFile.print(now / 1000.0f, 3);
 
             for (auto &keyValue : data) {
-                newLine += ",";
-                std::visit([&newLine](auto pointer){
-                    newLine += String(*pointer);
+                logFile.print(",");
+                std::visit([this](auto pointer) {
+                    logFile.print(*pointer);
                 }, keyValue.second);
             }
+            logFile.print("\n");
 
-            newLine += "\n";
-            bytesWritten += logFile.print(newLine);
-
-            size_t currentSector = bytesWritten / 512;
-
-            if (currentSector != lastFlushedSector) {
+            if (now - lastFlushTime >= 1000) { // Flushes data every second
                 logFile.flush();
-                lastFlushedSector = currentSector;
+                lastFlushTime = now;
             }
+
+            if (now - lastReopenTime >= 10000) { // Opens and closes file every 10 seconds
+                logFile.flush();
+                logFile.close();
+                logFile = SD.open(fileName, FILE_APPEND);
+                lastReopenTime = now;
+            }
+
             lastLogTime = millis();
         }
 
@@ -101,9 +106,7 @@ class loggingManager {
             if (logFile) {
                 logFile.flush();
                 logFile.close();
-                bytesWritten = 0;
-                lastFlushedSector = 0;
-                loggingActive = false;
             }
+            loggingActive = false;
         }
 };
