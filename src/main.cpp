@@ -202,6 +202,7 @@ void loop() {
 
         if (autoLogger.loggingActive == true) {
             if (canBus.throttlePos < autoLoggingThreshold) { // Close log after configurable amount of seconds under throttle threshold.
+                autoLogger.log(); // Ensures also logging when under the threshold, a little ugly but it works and I'm too lazy to change this...
                 if (throttleBelowStartTime == 0) {
                     throttleBelowStartTime = millis();
                 }
