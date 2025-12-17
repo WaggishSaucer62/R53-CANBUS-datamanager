@@ -12,7 +12,6 @@ class powerCalculator {
     private:
         const float alpha = 0.05;
         float powerInformation[4] = {0,0,0,0}; // prevSpeed, prevTime, currentSpeed, currentTime
-        float lastPower = 0;
 
         CANBUS& canBus;
 

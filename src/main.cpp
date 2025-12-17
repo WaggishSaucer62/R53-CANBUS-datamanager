@@ -83,6 +83,15 @@ void setup(void) {
 
     tempText.xPos = tft.width() - 20;
     tempText.yPos = tft.height() - 20;
+    tempText.textSize = 3;
+
+    powerText.xPos = (tft.width()/2)-70;
+    powerText.yPos = 30;
+    powerText.textSize = 4;
+
+    powerPeakText.xPos = (tft.width()/2)+70;
+    powerPeakText.yPos = 30;
+    powerPeakText.textSize = 4;
 
     loggingToggle.xPos = 200;
     loggingToggle.yPos = 100;

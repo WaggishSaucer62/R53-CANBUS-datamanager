@@ -15,6 +15,8 @@ WaggishSaucer62, 27/11/25
 #include <map>
 #include <string>
 #include <variant>
+#include <deque>
+#include <cstdint>
 
 
 #define MCP_CS 27
@@ -68,6 +70,7 @@ extern bool reinit;
 #include "configManager.hpp"
 #include "loggingManager.hpp"
 #include "powerCalculator.hpp"
+#include "slidingMax.hpp"
 
 
 extern arcDial rpmDial;
@@ -75,6 +78,8 @@ extern verticalBar fuelGauge;
 extern verticalBar throttleGauge;
 extern shiftCueDots shiftDots;
 extern textLabel tempText;
+extern textLabel powerText;
+extern textLabel powerPeakText;
 extern button loggingToggle;
 extern button autoLoggingToggle;
 extern verticalSlider brightnessSlider;
@@ -87,3 +92,4 @@ extern configManager config;
 extern loggingManager logger;
 extern loggingManager autoLogger;
 extern powerCalculator powerCalc;
+extern slidingMax hpMax;

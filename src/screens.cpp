@@ -51,7 +51,7 @@ void mainScreenInit() {
     tft.fillScreen(TFT_BLACK);
     rpmDial.init();
     fuelGauge.init();
-    tempText.init();
+    tempText.init(canBus.externalTemp);
     throttleGauge.init();
 }
 
@@ -64,13 +64,10 @@ void settingsScreenInit() {
 }
 
 void powerScreenInit() {
-    tft.fillScreen(TFT_BLACK);
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.setTextSize(3);
-    tft.setTextDatum(TL_DATUM);
-    tft.drawString("Power:  0", 10, 10);
-    tft.drawString("Acceleration 0", 10, 40);
-    tft.drawString("Weight: 0", 10, 70);
+    powerText.init("0");
+    powerPeakText.init("0");
+    tft.drawString("HP", powerText.xPos, powerText.yPos+40);
+    tft.drawString("Peak", powerPeakText.xPos, powerPeakText.yPos+40);
     powerGraph.init();
     }
 
@@ -88,20 +85,14 @@ void mainScreen() {
 void powerScreen() {
     static uint32_t lastCalc = 0;
     static uint32_t lastUpdatedGraph = 0;
-    static float lastPower = 0;
 
     if (millis() - lastCalc > 50) { // Every 50ms, calculate power and update related display items
-        if (abs(powerCalc.smoothedPower - lastPower) > 0.1) { // CORRECT THIS - THIS IS A BUNCH OF PRINTS FOR DEBUGGING
-            tft.fillRect(0, 0, 320, 145, TFT_BLACK);
-            tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setTextSize(3);
-            tft.setTextDatum(TL_DATUM);
-            tft.drawString("Power: " + String(powerCalc.smoothedPower, 1), 10, 10);
-            tft.drawString("Acceleration: " + String(powerCalc.acceleration, 1), 10, 40);
-            tft.drawString("Weight: " + String(powerCalc.fullWeight, 1), 10, 70);
+        float currentPower = powerCalc.smoothedPower;
 
-            lastPower = powerCalc.smoothedPower;
-        }
+        hpMax.add(millis(), currentPower);
+        powerPeakText.update(String(hpMax.max(), 1));
+        powerText.update(String(currentPower, 1));
+
         lastCalc = millis();
     }
 

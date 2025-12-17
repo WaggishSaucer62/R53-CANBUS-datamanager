@@ -15,11 +15,13 @@ class textLabel {
   public:
     int xPos;
     int yPos;
+    int textSize;
 
-    void init() {
+    void init(String initVal) {
+        lastVal = initVal;
         tft.setTextDatum(MC_DATUM);
         tft.setTextColor(TFT_WHITE, TFT_BLACK);
-        tft.setTextSize(3);
+        tft.setTextSize(textSize);
         tft.drawString(lastVal, xPos, yPos);
     }
 
@@ -27,11 +29,10 @@ class textLabel {
         if (val != lastVal) {
             tft.setTextDatum(MC_DATUM);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setTextSize(3);
+            tft.setTextSize(textSize);
             int16_t width = tft.textWidth(val);
             int16_t height = tft.fontHeight();
             tft.fillRect(xPos - (width / 2), yPos - (height / 2), width, height, DARKER_GREY);
-            tft.fillCircle(xPos, yPos, 20, TFT_BLACK);
             tft.drawString(val, xPos, yPos);
             lastVal = val;
         }
