@@ -64,6 +64,7 @@ void settingsScreenInit() {
 }
 
 void powerScreenInit() {
+    tft.fillScreen(TFT_BLACK);
     powerText.init("0");
     powerPeakText.init("0");
     tft.drawString("HP", powerText.xPos, powerText.yPos+40);
