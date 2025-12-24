@@ -66,7 +66,6 @@ class loggingManager {
 
             lastLogTime = millis();
             lastFlushTime = millis();
-            lastReopenTime = millis();
             loggingActive = true;
         }
 
