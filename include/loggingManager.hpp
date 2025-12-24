@@ -23,7 +23,6 @@ class loggingManager {
 
         unsigned long lastLogTime = 0;
         unsigned long lastFlushTime = 0;
-        unsigned long lastReopenTime = 0;
 
         String getNextLogFileName() {
             int i = 0;
@@ -87,16 +86,9 @@ class loggingManager {
             }
             logFile.print("\n");
 
-            if (now - lastFlushTime >= 1000) {
+            if (now - lastFlushTime >= 5000) {
                 logFile.flush();
                 lastFlushTime = now;
-            }
-
-            if (now - lastReopenTime >= 10000) {
-                logFile.flush();
-                logFile.close();
-                logFile = SD.open(fileName, FILE_APPEND);
-                lastReopenTime = now;
             }
 
             lastLogTime = millis();
