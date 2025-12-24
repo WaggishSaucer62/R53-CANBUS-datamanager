@@ -12,6 +12,7 @@ class CANBUS {
     public:
         int rpm = 0;
         float spdAvg = 0;
+        float lastSpeed = 0;
         int throttlePos = 0;
         int fuelPercent = 100;
         String externalTemp = "0";
@@ -56,12 +57,14 @@ class CANBUS {
             float sum = 0;
             int count = 0;
             for (float v : spd) {
-                if (v >= 0 && v <= 150) {
+                if (v >= 0 && v <= 250) {
                     sum += v;
                     count++;
                 }
             }
-            spdAvg = (count ? sum / count : 0);
+
+            spdAvg = (count ? sum / count : lastSpeed);
+            lastSpeed = spdAvg;
         }
 
         void processThrottle(unsigned char* b) {

@@ -10,7 +10,7 @@ WaggishSaucer62, 06/12/25
 
 class powerCalculator {
     private:
-        const float alpha = 0.05;
+        const float alpha = 0.3; // Higher is less smoothing
         float powerInformation[4] = {0,0,0,0}; // prevSpeed, prevTime, currentSpeed, currentTime
 
         CANBUS& canBus;
