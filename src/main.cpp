@@ -155,7 +155,7 @@ void setup(void) {
     logger.data["Throttle Position"] = &canBus.throttlePos;
     logger.data["fuelPercent"] = &canBus.fuelPercent;
     logger.data["externalTemp"] = &canBus.externalTemp;
-    logger.data["power"] = &powerCalc.smoothedPower;
+    logger.data["power"] = &powerCalc.power;
     logger.data["acceleration"] = &powerCalc.acceleration;
     logger.data["fullWeight"] = &powerCalc.fullWeight;
 
@@ -164,7 +164,7 @@ void setup(void) {
     autoLogger.data["Throttle Position"] = &canBus.throttlePos;
     autoLogger.data["fuelPercent"] = &canBus.fuelPercent;
     autoLogger.data["externalTemp"] = &canBus.externalTemp;
-    autoLogger.data["power"] = &powerCalc.smoothedPower;
+    autoLogger.data["power"] = &powerCalc.power;
     autoLogger.data["acceleration"] = &powerCalc.acceleration;
     autoLogger.data["fullWeight"] = &powerCalc.fullWeight;
 

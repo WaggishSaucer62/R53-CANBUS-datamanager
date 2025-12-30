@@ -88,7 +88,7 @@ void powerScreen() {
     static uint32_t lastUpdatedGraph = 0;
 
     if (millis() - lastCalc > 50) { // Every 50ms, calculate power and update related display items
-        float currentPower = powerCalc.smoothedPower;
+        float currentPower = powerCalc.power;
 
         hpMax.add(millis(), currentPower);
         powerPeakText.update(String(hpMax.max(), 1));
@@ -98,7 +98,7 @@ void powerScreen() {
     }
 
     if (millis()-lastUpdatedGraph > 30) { // Still update graph separately, to keep control of scanrate
-        powerGraph.update(powerCalc.smoothedPower);
+        powerGraph.update(powerCalc.power);
         lastUpdatedGraph = millis();
     }
 }

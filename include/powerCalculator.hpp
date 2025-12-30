@@ -10,7 +10,6 @@ WaggishSaucer62, 06/12/25
 
 class powerCalculator {
     private:
-        const float alpha = 0.3; // Higher is less smoothing
         float powerInformation[4] = {0,0,0,0}; // prevSpeed, prevTime, currentSpeed, currentTime
 
         CANBUS& canBus;
@@ -19,7 +18,7 @@ class powerCalculator {
         powerCalculator(CANBUS& canbus) : canBus(canbus) {}
 
         float acceleration = 0;
-        float smoothedPower = 0;
+        float power = 0;
 
         float dragCoeff = 0.39;
         float airDensity = 1.225;
@@ -40,9 +39,7 @@ class powerCalculator {
             if ((powerInformation[2] - powerInformation[0] != 0) && dt > 0.01f) {
                 acceleration = ((powerInformation[2]-powerInformation[0])/3.6)/dt;
             }
-            float power = (((fullWeight*acceleration)+dragForce)*(powerInformation[2]/3.6))/745.7;
-
-            smoothedPower = smoothedPower + alpha * (power - smoothedPower);
-            return smoothedPower;
+            power = (((fullWeight*acceleration)+dragForce)*(powerInformation[2]/3.6))/745.7;
+            return power;
         }
 };
