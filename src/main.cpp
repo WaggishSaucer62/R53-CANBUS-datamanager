@@ -252,6 +252,7 @@ void loop() {
             checkScreenSwitch(xTouch, yTouch); // Checks if screen should be switched
             
             shiftDotsLED.update(canBus.rpm); // Update LEDs every frame irrespective of screen
+            hpMax.add(millis(), powerCalc.power); // Update hpMax every frame from any screen
             switch(currentScreen) {
             case MAIN_SCREEN:
                 mainScreen();

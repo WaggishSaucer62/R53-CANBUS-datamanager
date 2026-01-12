@@ -90,7 +90,6 @@ void powerScreen() {
     if (millis() - lastCalc > 50) { // Every 50ms, calculate power and update related display items
         float currentPower = powerCalc.power;
 
-        hpMax.add(millis(), currentPower);
         powerPeakText.update(String(hpMax.max(), 1));
         powerText.update(String(currentPower, 1));
 
