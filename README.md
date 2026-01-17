@@ -13,7 +13,6 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
 ## TODO:
  - [x] Refactor to use classes and PlatformIO.
  - [x] Add SD card support.
- - [ ] Make HP estimation actually accurate.
  - [ ] See if it is possible to make it automatically sleep and wake from CAN signals.
  - [x] Provide compiled code to make it easier to flash to ESP32.
  - [x] Complete and upload PCBs.
