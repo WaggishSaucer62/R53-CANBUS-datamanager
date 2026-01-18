@@ -65,7 +65,7 @@ void setup(void) {
     rpmDial.val2 = 0;
 
     fuelGauge.xPos = 10;
-    fuelGauge.yPos = tft.height()-10-100;
+    fuelGauge.yPos = tft.height()-10-100-30;
     fuelGauge.width = 20;
     fuelGauge.height = 100;
     fuelGauge.percentage = 0;
@@ -84,6 +84,10 @@ void setup(void) {
     tempText.xPos = tft.width() - 20;
     tempText.yPos = tft.height() - 20;
     tempText.textSize = 3;
+
+    coolantTemp.xPos = 50;
+    coolantTemp.yPos = tft.height() - 20;
+    coolantTemp.textSize = 3;
 
     powerText.xPos = (tft.width()/2)-70;
     powerText.yPos = 30;
@@ -158,6 +162,7 @@ void setup(void) {
     logger.data["power"] = &powerCalc.power;
     logger.data["acceleration"] = &powerCalc.acceleration;
     logger.data["fullWeight"] = &powerCalc.fullWeight;
+    logger.data["coolantTemp"] = &canBus.engineTemp;
 
     autoLogger.data["rpm"] = &canBus.rpm;
     autoLogger.data["speed"] = &canBus.spdAvg;
@@ -167,6 +172,7 @@ void setup(void) {
     autoLogger.data["power"] = &powerCalc.power;
     autoLogger.data["acceleration"] = &powerCalc.acceleration;
     autoLogger.data["fullWeight"] = &powerCalc.fullWeight;
+    logger.data["coolantTemp"] = &canBus.engineTemp;
 
     fuelWarningLevel = config.get("fuelWarningLevel", "5").toInt();
 

@@ -52,6 +52,7 @@ void mainScreenInit() {
     rpmDial.init();
     fuelGauge.init();
     tempText.init(canBus.externalTemp);
+    coolantTemp.init(canBus.engineTemp);
     throttleGauge.init();
 }
 
@@ -80,6 +81,7 @@ void mainScreen() {
     throttleGauge.update(canBus.throttlePos);
     shiftDots.update(canBus.rpm);
     tempText.update(canBus.externalTemp);
+    coolantTemp.update(canBus.engineTemp);
 }
 
 

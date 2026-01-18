@@ -39,6 +39,7 @@ shiftCueDots shiftDots;
 textLabel tempText;
 textLabel powerText;
 textLabel powerPeakText;
+textLabel coolantTemp;
 button loggingToggle;
 button autoLoggingToggle;
 verticalSlider brightnessSlider;

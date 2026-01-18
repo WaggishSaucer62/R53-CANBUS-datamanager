@@ -80,6 +80,7 @@ extern shiftCueDots shiftDots;
 extern textLabel tempText;
 extern textLabel powerText;
 extern textLabel powerPeakText;
+extern textLabel coolantTemp;
 extern button loggingToggle;
 extern button autoLoggingToggle;
 extern verticalSlider brightnessSlider;
