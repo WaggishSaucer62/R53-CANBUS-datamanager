@@ -17,11 +17,12 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
  - [x] Provide compiled code to make it easier to flash to ESP32.
  - [x] Complete and upload PCBs.
  - [x] Complete and upload 3D printed models for housings and mounts.
- - [ ] Scan for other dataframes and attempt to decode them.
+ - [x] Scan for other dataframes and attempt to decode them.
  - [x] Add wiring diagram for car cable splitter to README.
  - [x] Add ARGB strip functionality
  - [x] Create a config file (led count, rpm band settings etc.)
  - [x] Add logging.
+ - [ ] Add support for elm327.
 
 
 ## Parts List:
