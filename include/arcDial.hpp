@@ -44,8 +44,8 @@ class arcDial {
 
 
     public:
-        int val1; //rpm for this project
-        int val2; //speed for this project
+        int val1 = 0; //rpm for this project
+        int val2 = 0; //speed for this project
         int xPos;
         int yPos;
         int radius;
@@ -83,9 +83,17 @@ class arcDial {
 
             drawGradientArc(30, 330, TFT_GREEN, TFT_RED);
             tft.drawArc(xPos, yPos, innerRadius, innerRadius - thickness, lastAngle, 330, TFT_BLACK, DARKER_GREY);
+
+            // Draw texts
+            tft.setTextDatum(MC_DATUM);
+            tft.setTextColor(TFT_WHITE, DARKER_GREY);
+            tft.setTextSize(4);
+            tft.drawString(String(val2), xPos, yPos);
+            tft.setTextSize(2);
+            tft.drawString(String(val1), xPos, yPos + 30);
         }
 
-        void update(int newVal1, int newVal2) { // In this project, newVal1 = rpm, newVal2 = speed // UPDATE DOES NOT SEEM TO BE ONLY DRAWING CHANGED PARTS, RPM TEXT FLASHES 0 AND GAUGE FLASHES BLACK/COLOUR
+        void update(int newVal1, int newVal2) { // In this project, newVal1 = rpm, newVal2 = speed
             dialPercentage = map(newVal1, lowerBound, upperBound, 0, 100);
             redValue = map(dialPercentage, 0, 100, 0, 255);
             greenValue = map(dialPercentage, 0, 100, 255, 0);
@@ -112,7 +120,7 @@ class arcDial {
                 tft.setTextDatum(MC_DATUM);
                 tft.setTextColor(TFT_WHITE, DARKER_GREY);
                 tft.setTextSize(4);
-                tft.drawNumber(newVal2, xPos, yPos);
+                tft.drawString(String(newVal2), xPos, yPos);
             }
 
             // Update lower text
@@ -125,7 +133,7 @@ class arcDial {
                 tft.setTextDatum(MC_DATUM);
                 tft.setTextColor(TFT_WHITE, DARKER_GREY);
                 tft.setTextSize(2);
-                tft.drawNumber(newVal1, xPos, yPos + 30);
+                tft.drawString(String(newVal1), xPos, yPos + 30);
             }
 
             // Update values for other functions and next loop

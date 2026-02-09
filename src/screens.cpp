@@ -71,7 +71,7 @@ void powerScreenInit() {
     tft.drawString("HP", powerText.xPos, powerText.yPos+40);
     tft.drawString("Peak", powerPeakText.xPos, powerPeakText.yPos+40);
     powerGraph.init();
-    }
+}
 
 
 

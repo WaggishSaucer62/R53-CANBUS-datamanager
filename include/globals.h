@@ -56,6 +56,8 @@ extern int autoLoggingThreshold;
 extern int stopDrawForMillis;
 extern bool reinit;
 
+extern bool hibernate;
+
 
 #include "arcDial.hpp"
 #include "verticalBarGauge.hpp"

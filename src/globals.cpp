@@ -32,6 +32,8 @@ int autoLoggingThreshold = 70;
 int stopDrawForMillis = 0;
 bool reinit = false;
 
+bool hibernate = false;
+
 arcDial rpmDial;
 verticalBar fuelGauge;
 verticalBar throttleGauge;
