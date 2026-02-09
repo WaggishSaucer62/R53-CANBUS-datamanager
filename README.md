@@ -45,8 +45,7 @@ The connector to look for is "IL-AG5-7S-S3C1", this is the listing I bought it f
 
 
 ## Known Issues:
- - For some reason, if the car 12v power is connected to the module, **remote locking for the car works intermittently**, but does not affect key based locking. The issue occurs with either power and data, or just power wires plugged in, I have not tested data only.
- - Acceleration values randomly blow up over several thousand in power calculations.
+ - Without power filtering, it can sometimes interfere with remote locking. This issue was not consistent between designs, and seems to have been resolved with the added power filter (PCB designs in the files).
  - RPM arc is sometimes backfilled with a solid colour for no intended reason.
 
 
