@@ -13,7 +13,7 @@ Credits: Ball joint mount based on [this](https://www.printables.com/model/16484
 ## TODO:
  - [x] Refactor to use classes and PlatformIO.
  - [x] Add SD card support.
- - [ ] See if it is possible to make it automatically sleep and wake from CAN signals.
+ - [x] See if it is possible to make it automatically sleep and wake from CAN signals.
  - [x] Provide compiled code to make it easier to flash to ESP32.
  - [x] Complete and upload PCBs.
  - [x] Complete and upload 3D printed models for housings and mounts.
@@ -47,6 +47,7 @@ The connector to look for is "IL-AG5-7S-S3C1", this is the listing I bought it f
 ## Known Issues:
  - Without power filtering, it can sometimes interfere with remote locking. This issue was not consistent between designs, and seems to have been resolved with the added power filter (PCB designs in the files).
  - RPM arc is sometimes backfilled with a solid colour for no intended reason.
+ - Auto start/stop with car ignition occasionally does not work, likely due to a signal I thought was related to ignition status is something else closely related.
 
 
 ## Installation:
