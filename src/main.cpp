@@ -179,6 +179,138 @@ void setup(void) {
     fuelWarningLevel = config.get("fuelWarningLevel", "5").toInt();
 
 
+    int presetCenterOffset = 50;
+    int leftPresetCenterOffset = 50;
+
+    accelStartSpeedUp.xPos = 20;
+    accelStartSpeedUp.yPos = 100;
+    accelStartSpeedUp.radius = 13;
+    accelStartSpeedUp.colourOn = TFT_GREEN;
+    accelStartSpeedUp.colourOff = TFT_GREEN;
+    accelStartSpeedUp.text = "^";
+    accelStartSpeedUp.state = false;
+
+    accelStartSpeedDown.xPos = 20;
+    accelStartSpeedDown.yPos = 140;
+    accelStartSpeedDown.radius = 13;
+    accelStartSpeedDown.colourOn = TFT_RED;
+    accelStartSpeedDown.colourOff = TFT_RED;
+    accelStartSpeedDown.text = "v";
+    accelStartSpeedDown.state = false;
+
+
+    accelStartSpeedPreset1.xPos = tft.width()/2 - presetCenterOffset - leftPresetCenterOffset;
+    accelStartSpeedPreset1.yPos = 160;
+    accelStartSpeedPreset1.radius = 20;
+    accelStartSpeedPreset1.colourOn = TFT_BLUE;
+    accelStartSpeedPreset1.colourOff = TFT_BLUE;
+    accelStartSpeedPreset1.text = "0";
+    accelStartSpeedPreset1.state = false;
+
+    accelStartSpeedPreset2.xPos = tft.width()/2 - presetCenterOffset - leftPresetCenterOffset + 50;
+    accelStartSpeedPreset2.yPos = 160;
+    accelStartSpeedPreset2.radius = 20;
+    accelStartSpeedPreset2.colourOn = TFT_BLUE;
+    accelStartSpeedPreset2.colourOff = TFT_BLUE;
+    accelStartSpeedPreset2.text = "3";
+    accelStartSpeedPreset2.state = false;
+
+    accelStartSpeedPreset3.xPos = tft.width()/2 - presetCenterOffset - leftPresetCenterOffset;
+    accelStartSpeedPreset3.yPos = 210;
+    accelStartSpeedPreset3.radius = 20;
+    accelStartSpeedPreset3.colourOn = TFT_BLUE;
+    accelStartSpeedPreset3.colourOff = TFT_BLUE;
+    accelStartSpeedPreset3.text = "5";
+    accelStartSpeedPreset3.state = true;
+
+    accelStartSpeedPreset4.xPos = tft.width()/2 - presetCenterOffset - leftPresetCenterOffset + 50;
+    accelStartSpeedPreset4.yPos = 210;
+    accelStartSpeedPreset4.radius = 20;
+    accelStartSpeedPreset4.colourOn = TFT_BLUE;
+    accelStartSpeedPreset4.colourOff = TFT_BLUE;
+    accelStartSpeedPreset4.text = "10";
+    accelStartSpeedPreset4.state = false;
+
+
+
+    accelEndSpeedUp.xPos = (tft.width()) - 150;
+    accelEndSpeedUp.yPos = 100;
+    accelEndSpeedUp.radius = 13;
+    accelEndSpeedUp.colourOn = TFT_GREEN;
+    accelEndSpeedUp.colourOff = TFT_GREEN;
+    accelEndSpeedUp.text = "^";
+    accelEndSpeedUp.state = false;
+
+    accelEndSpeedDown.xPos = (tft.width()) - 150;
+    accelEndSpeedDown.yPos = 140;
+    accelEndSpeedDown.radius = 13;
+    accelEndSpeedDown.colourOn = TFT_RED;
+    accelEndSpeedDown.colourOff = TFT_RED;
+    accelEndSpeedDown.text = "v";
+    accelEndSpeedDown.state = false;
+
+
+    accelEndSpeedPreset1.xPos = tft.width()/2 + presetCenterOffset;
+    accelEndSpeedPreset1.yPos = 160;
+    accelEndSpeedPreset1.radius = 20;
+    accelEndSpeedPreset1.colourOn = TFT_BLUE;
+    accelEndSpeedPreset1.colourOff = TFT_BLUE;
+    accelEndSpeedPreset1.text = "60";
+    accelEndSpeedPreset1.state = false;
+
+    accelEndSpeedPreset2.xPos = tft.width()/2 + presetCenterOffset + 50;
+    accelEndSpeedPreset2.yPos = 160;
+    accelEndSpeedPreset2.radius = 20;
+    accelEndSpeedPreset2.colourOn = TFT_BLUE;
+    accelEndSpeedPreset2.colourOff = TFT_BLUE;
+    accelEndSpeedPreset2.text = "100";
+    accelEndSpeedPreset2.state = false;
+
+    accelEndSpeedPreset3.xPos = tft.width()/2 + presetCenterOffset;
+    accelEndSpeedPreset3.yPos = 210;
+    accelEndSpeedPreset3.radius = 20;
+    accelEndSpeedPreset3.colourOn = TFT_BLUE;
+    accelEndSpeedPreset3.colourOff = TFT_BLUE;
+    accelEndSpeedPreset3.text = "120";
+    accelEndSpeedPreset3.state = true;
+
+    accelEndSpeedPreset4.xPos = tft.width()/2 + presetCenterOffset + 50;
+    accelEndSpeedPreset4.yPos = 210;
+    accelEndSpeedPreset4.radius = 20;
+    accelEndSpeedPreset4.colourOn = TFT_BLUE;
+    accelEndSpeedPreset4.colourOff = TFT_BLUE;
+    accelEndSpeedPreset4.text = "150";
+    accelEndSpeedPreset4.state = false;
+
+
+
+    accelStartSpeedText.xPos = (tft.width()/2)-70;
+    accelStartSpeedText.yPos = (tft.height()/2)-10;
+    accelStartSpeedText.textSize = 4;
+    accelStartSpeedText.lastVal = "5";
+
+    accelEndSpeedText.xPos = (tft.width()/2)+70;
+    accelEndSpeedText.yPos = (tft.height()/2)-10;
+    accelEndSpeedText.textSize = 4;
+    accelEndSpeedText.lastVal = "100";
+
+    accelStartText.xPos = (tft.width()/2)-100+10;
+    accelStartText.yPos = (tft.height()/2)-100;
+    accelStartText.textSize = 2;
+    accelStartText.lastVal = "Start Speed";
+
+    accelEndText.xPos = (tft.width()/2)+100;
+    accelEndText.yPos = (tft.height()/2)-100;
+    accelEndText.textSize = 2;
+    accelEndText.lastVal = "End Speed";
+
+    accelTime.xPos = tft.width()/2;
+    accelTime.yPos = (tft.height()/2)-60;
+    accelTime.textSize = 4;
+    accelTime.lastVal = "0.00s";
+
+
+
     if (sdInit == false) {
         fullscreenWarning("SD INIT FAIL");
         delay(5000);
@@ -266,6 +398,9 @@ void loop() {
                         case POWER_SCREEN:
                             powerScreenInit();
                             break;
+                        case ACCEL_SCREEN:
+                            accelerationTestScreenInit();
+                            break;
                     }
                     reinit = false;
                 }
@@ -284,6 +419,9 @@ void loop() {
                     break;
                 case POWER_SCREEN:
                     powerScreen();
+                    break;
+                case ACCEL_SCREEN:
+                    accelerationTestScreen();
                     break;
                 }
                 lastDraw = millis();

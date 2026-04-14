@@ -35,6 +35,10 @@ void checkScreenSwitch(uint16_t xTouch, uint16_t yTouch) {
                 currentScreen = POWER_SCREEN;
                 break;
             case POWER_SCREEN:
+                accelerationTestScreenInit();
+                currentScreen = ACCEL_SCREEN;
+                break;
+            case ACCEL_SCREEN:
                 mainScreenInit();
                 currentScreen = MAIN_SCREEN;
                 break;
@@ -71,6 +75,30 @@ void powerScreenInit() {
     tft.drawString("HP", powerText.xPos, powerText.yPos+40);
     tft.drawString("Peak", powerPeakText.xPos, powerPeakText.yPos+40);
     powerGraph.init();
+}
+
+void accelerationTestScreenInit() {
+    tft.fillScreen(TFT_BLACK);
+
+    accelStartSpeedUp.init();
+    accelStartSpeedDown.init();
+    accelStartSpeedPreset1.init();
+    accelStartSpeedPreset2.init();
+    accelStartSpeedPreset3.init();
+    accelStartSpeedPreset4.init();
+
+    accelEndSpeedUp.init();
+    accelEndSpeedDown.init();
+    accelEndSpeedPreset1.init();
+    accelEndSpeedPreset2.init();
+    accelEndSpeedPreset3.init();
+    accelEndSpeedPreset4.init();
+
+    accelStartSpeedText.init(accelStartSpeedText.lastVal);
+    accelEndSpeedText.init(accelEndSpeedText.lastVal);
+    accelStartText.init(accelStartText.lastVal);
+    accelEndText.init(accelEndText.lastVal);
+    accelTime.init(accelTime.lastVal);
 }
 
 
@@ -168,5 +196,68 @@ void settingsScreen() {
             }
         }
         lastPressedState = true;
+    }
+}
+
+
+void accelerationTestScreen() {
+    static bool accelStarted = false;
+    static bool runCompleted = false;
+    static unsigned long accelStartTime = 0;
+    static unsigned long accelEndTime = 0;
+    static unsigned long lastPressTime = 0;
+
+    if (pressed == false) {
+        if (canBus.spdAvg < accelStartSpeedText.lastVal.toInt()) {
+            accelStarted = false;
+            runCompleted = false;
+        }
+
+        if ((canBus.spdAvg > accelStartSpeedText.lastVal.toInt()) && (canBus.spdAvg < accelEndSpeedText.lastVal.toInt()) && (runCompleted == false)) {
+            if (accelStarted == false) {
+                accelStarted = true;
+                accelStartTime = millis();
+            } else if (accelStarted == true) {
+                accelTime.update(String((millis() - accelStartTime) / 1000.0, 2) + "s");
+            }
+        }
+
+        if ((canBus.spdAvg >= accelEndSpeedText.lastVal.toInt()) && (accelStarted == true)) {
+            accelStarted = false;
+            runCompleted = true;
+            accelEndTime = millis();
+            accelTime.update(String((accelEndTime - accelStartTime) / 1000.0, 2) + "s");
+        }
+    }
+
+    if ((millis() - lastPressTime > 100) && pressed == true) {
+        lastPressTime = millis();
+        if (xTouch < tft.width()/2) { // Splits screen in half for quicker checks.
+            if (accelStartSpeedUp.checkIfPressed(xTouch, yTouch)) {
+                accelStartSpeedText.update(String(accelStartSpeedText.lastVal.toInt() + 1));
+            } else if (accelStartSpeedDown.checkIfPressed(xTouch, yTouch)) {
+                accelStartSpeedText.update(String(accelStartSpeedText.lastVal.toInt() - 1));
+            } else if (accelStartSpeedPreset1.checkIfPressed(xTouch, yTouch)) {
+                accelStartSpeedText.update(String(accelStartSpeedPreset1.text.toInt()));
+            } else if (accelStartSpeedPreset2.checkIfPressed(xTouch, yTouch)) {
+                accelStartSpeedText.update(String(accelStartSpeedPreset2.text.toInt()));
+            } else if (accelStartSpeedPreset3.checkIfPressed(xTouch, yTouch)) {
+                accelStartSpeedText.update(String(accelStartSpeedPreset3.text.toInt()));
+            } else if (accelStartSpeedPreset4.checkIfPressed(xTouch, yTouch)) {
+                accelStartSpeedText.update(String(accelStartSpeedPreset4.text.toInt()));
+            }
+        } else if (accelEndSpeedUp.checkIfPressed(xTouch, yTouch)) {
+            accelEndSpeedText.update(String(accelEndSpeedText.lastVal.toInt() + 1));
+        } else if (accelEndSpeedDown.checkIfPressed(xTouch, yTouch)) {
+            accelEndSpeedText.update(String(accelEndSpeedText.lastVal.toInt() - 1));
+        } else if (accelEndSpeedPreset1.checkIfPressed(xTouch, yTouch)) {
+            accelEndSpeedText.update(String(accelEndSpeedPreset1.text.toInt()));
+        } else if (accelEndSpeedPreset2.checkIfPressed(xTouch, yTouch)) {
+            accelEndSpeedText.update(String(accelEndSpeedPreset2.text.toInt()));
+        } else if (accelEndSpeedPreset3.checkIfPressed(xTouch, yTouch)) {
+            accelEndSpeedText.update(String(accelEndSpeedPreset3.text.toInt()));
+        } else if (accelEndSpeedPreset4.checkIfPressed(xTouch, yTouch)) {
+            accelEndSpeedText.update(String(accelEndSpeedPreset4.text.toInt()));
+        }
     }
 }

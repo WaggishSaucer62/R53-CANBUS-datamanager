@@ -55,3 +55,25 @@ loggingManager logger(sd);
 loggingManager autoLogger(sd);
 powerCalculator powerCalc(canBus);
 slidingMax hpMax;
+
+
+
+button accelStartSpeedUp;
+button accelStartSpeedDown;
+button accelStartSpeedPreset1;
+button accelStartSpeedPreset2;
+button accelStartSpeedPreset3;
+button accelStartSpeedPreset4;
+
+button accelEndSpeedUp;
+button accelEndSpeedDown;
+button accelEndSpeedPreset1;
+button accelEndSpeedPreset2;
+button accelEndSpeedPreset3;
+button accelEndSpeedPreset4;
+
+textLabel accelStartSpeedText;
+textLabel accelEndSpeedText;
+textLabel accelStartText;
+textLabel accelEndText;
+textLabel accelTime;

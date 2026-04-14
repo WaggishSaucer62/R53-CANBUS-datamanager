@@ -1,5 +1,5 @@
 /*
-File for configManager class, handles reading, writing, and editing config (json) files.
+File for configManager class, handles reading, writing, and editing config files.
 WaggishSaucer62, 05/12/25
 */
 

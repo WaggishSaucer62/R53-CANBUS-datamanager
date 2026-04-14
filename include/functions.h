@@ -20,6 +20,8 @@ void powerScreenInit();
 void mainScreen();
 void settingsScreen();
 void powerScreen();
+void accelerationTestScreenInit();
+void accelerationTestScreen();
 void fullscreenWarning(String text);
 
 void calibrateAndPrintTouchData();

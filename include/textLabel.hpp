@@ -10,12 +10,13 @@ WaggishSaucer62, 27/11/25
 
 class textLabel {
   private:
-  String lastVal = "";
+  
 
   public:
     int xPos;
     int yPos;
     int textSize;
+    String lastVal = "";
 
     void init(String initVal) {
         tft.setTextDatum(MC_DATUM);
@@ -25,14 +26,14 @@ class textLabel {
         lastVal = initVal;
     }
 
-    void update(String val) {
+    void update(String val, uint16_t fillColour = TFT_BLACK) {
         if (val != lastVal) {
             tft.setTextDatum(MC_DATUM);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setTextSize(textSize);
             int16_t width = tft.textWidth(lastVal);
             int16_t height = tft.fontHeight();
-            tft.fillRect(xPos - (width / 2), yPos - (height / 2), width, height, DARKER_GREY);
+            tft.fillRect(xPos - (width / 2), yPos - (height / 2), width, height, fillColour);
             tft.drawString(val, xPos, yPos);
             lastVal = val;
         }

@@ -36,7 +36,8 @@ extern TFT_eSPI tft;
 enum screenID {
     MAIN_SCREEN,
     SETTINGS_SCREEN,
-    POWER_SCREEN
+    POWER_SCREEN,
+    ACCEL_SCREEN
 };
 extern screenID currentScreen;
 
@@ -96,3 +97,24 @@ extern loggingManager logger;
 extern loggingManager autoLogger;
 extern powerCalculator powerCalc;
 extern slidingMax hpMax;
+
+
+extern button accelStartSpeedUp;
+extern button accelStartSpeedDown;
+extern button accelStartSpeedPreset1;
+extern button accelStartSpeedPreset2;
+extern button accelStartSpeedPreset3;
+extern button accelStartSpeedPreset4;
+
+extern button accelEndSpeedUp;
+extern button accelEndSpeedDown;
+extern button accelEndSpeedPreset1;
+extern button accelEndSpeedPreset2;
+extern button accelEndSpeedPreset3;
+extern button accelEndSpeedPreset4;
+
+extern textLabel accelStartSpeedText;
+extern textLabel accelEndSpeedText;
+extern textLabel accelStartText;
+extern textLabel accelEndText;
+extern textLabel accelTime;
