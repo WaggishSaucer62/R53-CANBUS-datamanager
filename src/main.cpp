@@ -331,6 +331,9 @@ void setup(void) {
     case POWER_SCREEN:
         powerScreenInit();
         break;
+    case ACCEL_SCREEN:
+        accelerationTestScreenInit();
+        break;
     }
 }
 
