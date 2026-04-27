@@ -141,7 +141,7 @@ void setup(void) {
 
     LEDbrightnessPercentage = config.get("LEDsBrightness", "100").toInt();
     shiftDotsLED.flashSpeed = config.get("LEDsFlashingSpeed", "60").toInt();
-    shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "123435").toInt();
+    shiftDotsLED.flashingRPM = config.get("LEDsFlashingRPM", "6500").toInt();
 
     powerCalc.dragCoeff = config.get("dragCoeff", "0.39").toFloat();
     powerCalc.airDensity = config.get("airDensity", "1.225").toFloat();
